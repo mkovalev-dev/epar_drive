@@ -44,6 +44,7 @@ class File(models.Model):
     )
     created_date = models.DateTimeField("Дата создания", auto_now=True)
     is_private = models.BooleanField("Закрытый файл", default=False)
+    prefix = models.CharField("Префикс", max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.name

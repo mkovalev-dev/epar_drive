@@ -70,10 +70,15 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 ]
-THIRD_PARTY_APPS = ["rest_framework", "corsheaders", "django_filters",]
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "corsheaders",
+    "django_filters",
+]
 LOCAL_APPS = [
     "apps.base",
     "apps.users",
+    "apps.folder",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
