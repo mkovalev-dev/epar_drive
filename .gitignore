@@ -1,0 +1,7 @@
+# Project exclude paths
+/frontend/node_modules/
+
+.idea
+
+backend/media
+backend/django_static

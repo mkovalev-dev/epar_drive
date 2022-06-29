@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["maximkovalev <mkovalevhse@yandex.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.0.2"
+djangorestframework = "^3.13.1"
+django-environ = "^0.8.1"
+django-cors-headers = "^3.11.0"
+psycopg2 = "^2.9.3"
+argon2-cffi = "^21.3.0"
+black = "^22.1.0"
+django-filter = "^21.1"
+django-redis = "^5.2.0"
+gunicorn = "^20.1.0"
+uvicorn = "^0.17.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

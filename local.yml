@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+  epar_drive_nginx:
+    build:
+      context: ./backend/compose/local/nginx
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/app/django_static
+      - media_volume:/app/media
+    depends_on:
+      - epar_drive_django
+      - epar_drive_react
+
+  epar_drive_django:
+    build:
+      context: ./backend
+      dockerfile: ./compose/local/django/Dockerfile
+    container_name: epar_drive_django
+    volumes:
+      - ./backend:/app:z
+      - static_volume:/app/django_static
+      - media_volume:/app/media
+    env_file:
+      - backend/.envs/.local/.django
+      - backend/.envs/.local/.postgres
+    ports:
+      - 8000:8000
+      - 5678:5678
+    command: /start
+
+  epar_drive_react:
+    container_name: epar_drive_react
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+      - 9222:9222
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://127.0.0.1/api/
+
+volumes:
+    static_volume: {}
+    media_volume: {}

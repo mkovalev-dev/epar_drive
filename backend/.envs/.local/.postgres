@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=194.58.119.161
+POSTGRES_PORT=5432
+POSTGRES_DB=epar_drive
+POSTGRES_USER=maximkovalev
+POSTGRES_PASSWORD=1234567892q
