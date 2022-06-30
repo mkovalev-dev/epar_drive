@@ -11,6 +11,14 @@ class Folder(models.Model):
     creator = models.ForeignKey(
         User, on_delete=models.PROTECT, verbose_name="Создатель"
     )
+    parent_folder = models.ForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name="Родительская папка",
+        related_name="parent_folder_rm",
+    )
 
     class Meta:
         verbose_name = "Папка"
