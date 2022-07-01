@@ -1,0 +1,119 @@
+:root {
+  --main-color: rgb(5, 39, 68);
+  --danger-color: rgb(196, 51, 51);
+  --success-color: rgb(59, 173, 54);
+  --warning-color: rgb(255 210 71);
+}
+
+/* Default кнопка */
+.btn-default-custom {
+    color: var(--main-color) !important;
+    border-color: var(--main-color) !important;
+    border-radius: 5px !important;
+    height: 38px !important;
+    background-color: rgb(255, 255, 255) !important;
+    transition: all 1.1s ease;
+}
+
+.btn-default-custom:hover {
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 20px -8px rgba(116, 169, 241, 0.96) !important;
+}
+
+/* Primary кнопка */
+.btn-primary-custom {
+    color: #ffffff !important;
+    background-color: var(--main-color) !important;
+    border-color: var(--main-color) !important;
+    border-radius: 5px !important;
+    height: 38px !important;
+    transition: all 1.1s ease;
+}
+
+.btn-primary-custom:hover {
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 20px -8px rgba(116, 169, 241, 0.96) !important;
+}
+
+/* Danger кнопка */
+.btn-danger-custom {
+    color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+    border-radius: 5px !important;
+    height: 38px !important;
+    transition: all 1.1s ease;
+    background-color: rgba(239, 242, 245, 1) !important;
+}
+
+.btn-danger-custom:hover {
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 20px -8px rgb(183, 54, 54) !important;
+}
+
+/* Success кнопка */
+.btn-success-custom {
+    color: var(--success-color) !important;
+    border-color: var(--success-color) !important;
+    background-color: rgba(239, 242, 245, 1) !important;
+    border-radius: 5px !important;
+    height: 38px !important;
+    transition: all 1.1s ease;
+}
+
+.btn-success-custom:hover {
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 20px -8px rgb(57, 157, 53) !important;
+}
+
+/* Warning кнопка */
+.btn-warning-custom {
+    color: black !important;
+    border-color: var(--warning-color) !important;
+    background-color: var(--warning-color) !important;
+    border-radius: 5px !important;
+    height: 38px !important;
+    transition: all 1.1s ease;
+    box-shadow: 0px 0px 20px -8px rgba(0, 0, 0, 0.56) !important;
+}
+
+.btn-warning-custom:hover {
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 20px -8px rgb(255, 187, 1) !important;
+}
+
+/* Text кнопка */
+.btn-text-custom {
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    height: 38px !important;
+    transition: all 1.1s ease;
+}
+
+.btn-text-custom:hover {
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 20px -8px rgb(110, 110, 110) !important;
+}
+
+
+
+/* Центрирование */
+    /* По горизонтали */
+.gr-center-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+    /* По вертикали */
+.vr-center-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+    /* По центру */
+.vrgr-center-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
