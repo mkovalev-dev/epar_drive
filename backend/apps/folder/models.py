@@ -19,6 +19,7 @@ class Folder(models.Model):
         verbose_name="Родительская папка",
         related_name="parent_folder_rm",
     )
+    in_basket = models.BooleanField("В корзине", default=False)
 
     class Meta:
         verbose_name = "Папка"
