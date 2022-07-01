@@ -1,5 +1,10 @@
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    DestroyAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -44,4 +49,20 @@ class FolderDestroyAPIView(DestroyAPIView):
         instance = self.get_object()
         instance.in_basket = True
         instance.save()
-        return Response({"message": "success"}, status=status.HTTP_200_OK)
+        return Response(
+            {"id": instance.id, "name": instance.name}, status=status.HTTP_200_OK
+        )
+
+
+class TrashFolderListAPIView(ListAPIView):
+    """Список папок и файлов в корзине"""
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FolderListSerializer
+    pagination_class = None
+    queryset = Folder.objects.all().filter(in_basket=True)
+
+
+class HardDeleteFolderDestroyAPIView(DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Folder.objects.all()

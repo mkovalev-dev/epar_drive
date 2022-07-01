@@ -34,7 +34,7 @@ class CreateFolderSerializer(serializers.ModelSerializer):
 
 
 class FolderListSerializer(serializers.ModelSerializer):
-    """Сериализатор списка папок и файлов"""
+    """Сериализатор списка папок"""
 
     type = serializers.CharField(default="folder")
 
