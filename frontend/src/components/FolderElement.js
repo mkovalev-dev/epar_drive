@@ -9,7 +9,7 @@ import {
   setActiveDrawerItem,
 } from "../pages/slice/sliceBase";
 
-export default function FolderElement({ title, type, id }) {
+export default function FolderElement({ title, type, id, isTrash }) {
   const stateActiveFolderItem = useSelector(activeFolderItem);
   const dispatch = useDispatch();
   const [icon, setIcon] = useState();
@@ -41,6 +41,7 @@ export default function FolderElement({ title, type, id }) {
               name: title,
               visible: true,
               type: type,
+              trash: isTrash,
             })
           );
         }

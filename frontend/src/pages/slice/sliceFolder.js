@@ -13,6 +13,10 @@ const initialState = {
   deleteFolderData: {},
   deleteFolderStatus: "idle",
   deleteFolderError: null,
+
+  listTrashFolderData: [],
+  listTrashFolderStatus: "idle",
+  listTrashFolderError: null,
 };
 
 export const folderCreate = createAsyncThunk(
@@ -63,6 +67,30 @@ export const folderRename = createAsyncThunk(
   }
 );
 
+export const trashFolderList = createAsyncThunk(
+  "folder/trashFolderList",
+  async (_, { rejectWithValue }) => {
+    const response = await api.get("folder/trash/");
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
+export const folderHardDelete = createAsyncThunk(
+  "folder/folderHardDelete",
+  async (id, { rejectWithValue }) => {
+    const response = await api.delete(`folder/hard-delete/${id}`);
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
 const folderSlice = createSlice({
   name: "folder",
   initialState,
@@ -103,6 +131,18 @@ const folderSlice = createSlice({
       state.deleteFolderStatus = "failed";
       state.deleteFolderError = action.payload.errors;
     },
+
+    [trashFolderList.pending]: (state) => {
+      state.listTrashFolderStatus = "loading";
+    },
+    [trashFolderList.fulfilled]: (state, action) => {
+      state.listTrashFolderStatus = "succeeded";
+      state.listTrashFolderData = action.payload;
+    },
+    [trashFolderList.rejected]: (state, action) => {
+      state.listTrashFolderStatus = "failed";
+      state.listTrashFolderError = action.payload.errors;
+    },
   },
 });
 
@@ -119,3 +159,9 @@ export const listFolderError = (state) => state.folder.listFolderError;
 export const deleteFolderData = (state) => state.folder.deleteFolderData;
 export const deleteFolderStatus = (state) => state.folder.deleteFolderStatus;
 export const deleteFolderError = (state) => state.folder.deleteFolderError;
+
+export const listTrashFolderData = (state) => state.folder.listTrashFolderData;
+export const listTrashFolderStatus = (state) =>
+  state.folder.listTrashFolderStatus;
+export const listTrashFolderError = (state) =>
+  state.folder.listTrashFolderError;

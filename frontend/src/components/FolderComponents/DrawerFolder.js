@@ -1,4 +1,4 @@
-import { Button, Col, Drawer, Dropdown, Row, Space } from "antd";
+import { Button, Col, Drawer, Dropdown, notification, Row, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
   activeDrawerItem,
@@ -15,14 +15,20 @@ import {
   RetweetOutlined,
   ShareAltOutlined,
   UploadOutlined,
+  UndoOutlined,
+  FireOutlined,
 } from "@ant-design/icons";
 import {
   deleteFolderStatus,
   folderDelete,
+  folderHardDelete,
+  trashFolderList,
 } from "../../pages/slice/sliceFolder";
 
 import { useState } from "react";
 import ModalRenameItem from "./ModalRenameItem";
+import { unwrapResult } from "@reduxjs/toolkit";
+import NotificationButtonHardDelete from "../NotificationButtonHardDelete";
 
 export default function DrawerFolder() {
   const dispatch = useDispatch();
@@ -72,72 +78,136 @@ export default function DrawerFolder() {
         <Col span={12}>
           <div style={{ marginTop: "4px", width: "100%" }}>
             <Space>
-              <Button
-                className="btn-default-custom"
-                icon={<ShareAltOutlined />}
-                disabled
-              >
-                Поделиться
-              </Button>
-              <Button
-                className="btn-default-custom"
-                icon={<UploadOutlined />}
-                disabled
-              >
-                Скачать
-              </Button>
-              <Button
-                type="text"
-                icon={<EditOutlined />}
-                className="btn-text-custom"
-                onClick={() => setVisibleModalRename(true)}
-              >
-                Переименовать
-              </Button>
-              <Button
-                type="text"
-                icon={<RetweetOutlined />}
-                className="btn-text-custom"
-                disabled
-              >
-                Переместить
-              </Button>
-              <Button
-                type="text"
-                icon={<DeleteOutlined />}
-                className="btn-text-custom"
-                // loading={stateFolderDeleteStatus === "loading"}
-                onClick={() => {
-                  dispatch(folderDelete(stateActiveDrawerItem.id));
-                  dispatch(setActiveFolderItem({}));
-                  dispatch(setActiveDrawerItem({ visible: false }));
-                }}
-              >
-                Удалить
-              </Button>
-              <Button
-                type="text"
-                icon={<CopyOutlined />}
-                className="btn-text-custom"
-                disabled
-              >
-                Копировать
-              </Button>
-              <Button
-                type="text"
-                icon={<EllipsisOutlined rotate={90} />}
-                className="btn-text-custom"
-                disabled
-              ></Button>
-              <Button
-                onClick={() => {
-                  dispatch(setActiveFolderItem({}));
-                  dispatch(setActiveDrawerItem({ visible: false }));
-                }}
-                type="text"
-                icon={<CloseOutlined />}
-                className="btn-text-custom"
-              ></Button>
+              {stateActiveDrawerItem.trash ? (
+                <>
+                  <Button
+                    className="btn-default-custom"
+                    icon={<UndoOutlined />}
+                    disabled
+                  >
+                    Восстановить
+                  </Button>
+                  <Button
+                    className="btn-danger-custom"
+                    icon={<FireOutlined />}
+                    onClick={() => {
+                      dispatch(folderHardDelete(stateActiveDrawerItem.id)).then(
+                        () => {
+                          dispatch(trashFolderList());
+                        }
+                      );
+                      dispatch(setActiveFolderItem({}));
+                      dispatch(setActiveDrawerItem({ visible: false }));
+                    }}
+                  >
+                    Удалить навсегда
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    className="btn-default-custom"
+                    icon={<ShareAltOutlined />}
+                    disabled
+                  >
+                    Поделиться
+                  </Button>
+                  <Button
+                    className="btn-default-custom"
+                    icon={<UploadOutlined />}
+                    disabled
+                  >
+                    Скачать
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<EditOutlined />}
+                    className="btn-text-custom"
+                    onClick={() => setVisibleModalRename(true)}
+                  >
+                    Переименовать
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<RetweetOutlined />}
+                    className="btn-text-custom"
+                    disabled
+                  >
+                    Переместить
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<DeleteOutlined />}
+                    className="btn-text-custom"
+                    // loading={stateFolderDeleteStatus === "loading"}
+                    onClick={() => {
+                      dispatch(folderDelete(stateActiveDrawerItem.id))
+                        .then(unwrapResult)
+                        .then((res) => {
+                          notification.open({
+                            key: "hard-delete",
+                            message: `Папка перемещена в корзину!`,
+                            description: (
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  dispatch(folderHardDelete(res.id)).then(
+                                    () => {
+                                      notification.close("hard-delete");
+                                      notification.success({
+                                        key: "success-hard-delete",
+                                        message: "Папка удалена навсегда!",
+                                        style: {
+                                          width: 325,
+                                          borderRadius: "25px 25px 0 0",
+                                        },
+                                        placement: "bottomLeft",
+                                      });
+                                    }
+                                  );
+                                }}
+                              >
+                                Удалить навсегда
+                              </Button>
+                            ),
+                            style: {
+                              width: 325,
+                              borderRadius: "25px 25px 0 0",
+                            },
+                            placement: "bottomLeft",
+                          });
+                        });
+                      dispatch(setActiveFolderItem({}));
+                      dispatch(setActiveDrawerItem({ visible: false }));
+                    }}
+                  >
+                    Удалить
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<CopyOutlined />}
+                    className="btn-text-custom"
+                    disabled
+                  >
+                    Копировать
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<EllipsisOutlined rotate={90} />}
+                    className="btn-text-custom"
+                    disabled
+                  ></Button>
+                  <Button
+                    onClick={() => {
+                      dispatch(setActiveFolderItem({}));
+                      dispatch(setActiveDrawerItem({ visible: false }));
+                    }}
+                    type="text"
+                    icon={<CloseOutlined />}
+                    className="btn-text-custom"
+                  ></Button>
+                </>
+              )}
             </Space>
           </div>
         </Col>

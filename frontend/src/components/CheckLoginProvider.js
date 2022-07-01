@@ -17,7 +17,7 @@ export default function CheckLoginProvider({ children }) {
         dispatch(setCheckLoginParams(false));
         navigate("/");
       });
-  }, []);
+  }, [children]);
 
   return children;
 }
