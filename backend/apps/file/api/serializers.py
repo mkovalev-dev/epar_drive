@@ -1,9 +1,24 @@
-from django.core.files.storage import default_storage
 from rest_framework import serializers
 
 from apps.base.constants import FileTypeConst
 from apps.base.models import File, FileType
 from apps.folder.models import Folder
+
+
+class ContentTypeConst:
+    XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    PNG = "image/png"
+    JPEG = "image/jpeg"
+
+
+class PrefixFileConst:
+    XLSX = ".xlsx"
+    PPTX = ".pptx"
+    DOCX = ".docx"
+    PNG = ".png"
+    JPEG = ".jpeg"
 
 
 class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
@@ -16,28 +31,17 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
         prefix = ""
         size = file.size / 1000000
         name = file.name
-        if (
-            file.content_type
-            == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ):
-            prefix = ".xlsx"
-        if (
-            file.content_type
-            == "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-        ):
-            prefix = ".pptx"
+        if file.content_type == ContentTypeConst.XLSX:
+            prefix = PrefixFileConst.XLSX
+        elif file.content_type == ContentTypeConst.PPTX:
+            prefix = PrefixFileConst.PPTX
+        elif file.content_type == ContentTypeConst.DOCX:
+            prefix = PrefixFileConst.DOCX
+        elif file.content_type == ContentTypeConst.PNG:
+            prefix = PrefixFileConst.PNG
+        elif file.content_type == ContentTypeConst.JPEG:
+            prefix = PrefixFileConst.JPEG
 
-        if (
-            file.content_type
-            == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        ):
-            prefix = ".docx"
-
-        if file.content_type == "image/png":
-            prefix = ".png"
-
-        if file.content_type == "image/jpeg":
-            prefix = ".jpg"
         instance = File.objects.create(
             path=file,
             name=name,
