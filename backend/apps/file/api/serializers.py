@@ -24,7 +24,7 @@ class PrefixFileConst:
 class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
     """Сериализатор загрузки файлов"""
 
-    file = serializers.FileField(source="path", write_only=True)
+    file = serializers.FileField(source="path", write_only=True, required=False)
 
     def create(self, validated_data):
         file = validated_data.pop("path", None)
@@ -60,7 +60,11 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = File
-        fields = ("file",)
+        fields = (
+            "file",
+            "name",
+        )
+        extra_kwargs = {"name": {"required": False}}
 
 
 class FileInFolderSerializer(serializers.ModelSerializer):

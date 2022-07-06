@@ -8,6 +8,7 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apps.base.api.views import MoveItemInBasketMixin
 from apps.folder.api.serializers import (
     CreateFolderSerializer,
     FolderListSerializer,
@@ -44,19 +45,10 @@ class FolderListAPIView(ListAPIView):
         )
 
 
-class FolderDestroyAPIView(DestroyAPIView):
+class FolderDestroyAPIView(MoveItemInBasketMixin):
     """Удаляет папку - перемещает в корзину"""
 
-    permission_classes = (IsAuthenticated,)
     queryset = Folder.objects.all()
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.in_basket = True
-        instance.save()
-        return Response(
-            {"id": instance.id, "name": instance.name}, status=status.HTTP_200_OK
-        )
 
 
 class TrashFolderListAPIView(ListAPIView):

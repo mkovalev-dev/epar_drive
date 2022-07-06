@@ -51,6 +51,7 @@ class File(models.Model):
     creator = models.ForeignKey(
         User, on_delete=models.PROTECT, verbose_name="Создатель", null=True, blank=True
     )
+    in_basket = models.BooleanField("В корзине", default=False)
 
     def __str__(self):
         return self.name
