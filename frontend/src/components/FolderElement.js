@@ -1,5 +1,6 @@
 import folder from "../resources/img/folder.png";
 import excel from "../resources/img/excel.png";
+import docx from "../resources/img/doc.png";
 import undefined_file from "../resources/img/undefined_file.png";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +19,8 @@ export default function FolderElement({ title, type, id, isTrash }) {
       setIcon(folder);
     } else if (type === ".xlsx") {
       setIcon(excel);
+    } else if (type === ".docx") {
+      setIcon(docx);
     } else {
       setIcon(undefined_file);
     }

@@ -10,22 +10,30 @@ import {
 import StateComponents from "../StateComponents";
 import PageHeaderCustom from "../../../components/PageHeaderCustom";
 import ListItems from "../../../components/ListItems";
+import {
+  fileList,
+  listFileData,
+  uploadFileChanger,
+} from "../../slice/sliceFile";
 
 export default function ProtectedHomePage() {
   const stateNewFolder = useSelector(newFolderData);
   const dispatch = useDispatch();
   const stateFolderListData = useSelector(listFolderData);
+  const stateFileListData = useSelector(listFileData);
   const stateFolderListStatus = useSelector(listFolderStatus);
   const stateFolderDelete = useSelector(deleteFolderData);
+  const stateUploadFileChanger = useSelector(uploadFileChanger);
   useEffect(() => {
     dispatch(folderList());
-  }, [stateNewFolder, stateFolderDelete]);
+    dispatch(fileList());
+  }, [stateNewFolder, stateFolderDelete, stateUploadFileChanger]);
 
   return (
     <StateComponents>
       <PageHeaderCustom title="Файлы" backIcon={false} />
       <ListItems
-        listData={[...stateFolderListData]}
+        listData={[...stateFolderListData, ...stateFileListData]}
         status={stateFolderListStatus}
       />
     </StateComponents>

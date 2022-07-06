@@ -10,7 +10,7 @@ export default function MenuItem({ id, icon, name, linkTo }) {
   return (
     <div
       className={
-        stateActiveManuItem.id === id
+        stateActiveManuItem?.id === id
           ? "menu-item-element-active"
           : "menu-item-element"
       }

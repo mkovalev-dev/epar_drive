@@ -78,7 +78,7 @@ export default function DrawerFolder() {
         <Col span={12}>
           <div style={{ marginTop: "4px", width: "100%" }}>
             <Space>
-              {stateActiveDrawerItem.trash ? (
+              {stateActiveDrawerItem?.trash ? (
                 <>
                   <Button
                     className="btn-default-custom"
@@ -160,6 +160,7 @@ export default function DrawerFolder() {
                                         style: {
                                           width: 325,
                                           borderRadius: "25px 25px 0 0",
+                                          marginBottom: "7px",
                                         },
                                         placement: "bottomLeft",
                                       });
@@ -173,6 +174,7 @@ export default function DrawerFolder() {
                             style: {
                               width: 325,
                               borderRadius: "25px 25px 0 0",
+                              marginBottom: "7px",
                             },
                             placement: "bottomLeft",
                           });

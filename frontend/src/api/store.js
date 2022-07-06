@@ -13,6 +13,7 @@ import storage from "redux-persist/lib/storage";
 import usersSlice from "../pages/slice/sliceUsers";
 import baseSlice from "../pages/slice/sliceBase";
 import folderSlice from "../pages/slice/sliceFolder";
+import fileSlice from "../pages/slice/sliceFile";
 
 /**
  * Настройки для store redux
@@ -22,12 +23,13 @@ const rootReducer = combineReducers({
   users: usersSlice,
   base: baseSlice,
   folder: folderSlice,
+  file: fileSlice,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["users", "base", "folder"],
+  whitelist: ["users", "base", "folder", "file"],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

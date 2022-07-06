@@ -16,7 +16,7 @@ export default function ListItems({ listData, status, trash = false }) {
       }}
       dataSource={listData}
       renderItem={(item) => (
-        <List.Item>
+        <List.Item key={item.id}>
           {status === "succeeded" ? (
             <FolderElement
               type={item.type}

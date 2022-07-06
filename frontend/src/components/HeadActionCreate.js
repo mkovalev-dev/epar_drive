@@ -2,9 +2,13 @@ import { Button, Upload } from "antd";
 import { PlusOutlined, UsbOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import ModalCreateFolder from "./FolderComponents/ModalCreateFolder";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { setUploadFileChanger } from "../pages/slice/sliceFile";
 
 export default function HeadActionCreate() {
   const [visibleModalCreate, setVisibleModalCreate] = useState(false);
+  const dispatch = useDispatch();
   return (
     <>
       <Button
@@ -16,7 +20,18 @@ export default function HeadActionCreate() {
         Создать папку
       </Button>
       <div style={{ marginBottom: "15px" }} />
-      <Upload className="upload-file-button">
+      <Upload
+        className="upload-file-button"
+        showUploadList={false}
+        action="/api/file/upload/"
+        multiple
+        accept=".xls,.xlsx,.doc,.docx, .png,.jpg"
+        headers={{ "X-CSRFTOKEN": Cookies.get("csrftoken") }}
+        method="POST"
+        onChange={(v) => {
+          dispatch(setUploadFileChanger(v.file));
+        }}
+      >
         <Button icon={<UsbOutlined />} block className="btn-default-custom">
           Загрузить
         </Button>
