@@ -31,12 +31,17 @@ class CreateFolderAPIView(CreateAPIView, UpdateAPIView):
 
 
 class FolderListAPIView(ListAPIView):
-    """Список папок и файлов на главной странице файлов"""
+    """Список папок на главной странице файлов"""
 
     permission_classes = (IsAuthenticated,)
     serializer_class = FolderListSerializer
     pagination_class = None
-    queryset = Folder.objects.all().filter(in_basket=False)
+    queryset = None
+
+    def get_queryset(self):
+        return Folder.objects.all().filter(
+            in_basket=False, creator=self.request.user, head_folder=False
+        )
 
 
 class FolderDestroyAPIView(DestroyAPIView):
@@ -60,7 +65,12 @@ class TrashFolderListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = FolderListSerializer
     pagination_class = None
-    queryset = Folder.objects.all().filter(in_basket=True)
+    queryset = None
+
+    def get_queryset(self):
+        return Folder.objects.all().filter(
+            in_basket=True, creator=self.request.user, head_folder=False
+        )
 
 
 class HardDeleteFolderDestroyAPIView(DestroyAPIView):

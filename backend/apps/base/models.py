@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from django.dispatch import receiver
 
+from apps.users.models import User
+
 
 class FileType(models.Model):
     """Типы файлов"""
@@ -45,6 +47,10 @@ class File(models.Model):
     created_date = models.DateTimeField("Дата создания", auto_now=True)
     is_private = models.BooleanField("Закрытый файл", default=False)
     prefix = models.CharField("Префикс", max_length=255, null=True, blank=True)
+    size = models.FloatField("Размер файла в МБ", default=0)
+    creator = models.ForeignKey(
+        User, on_delete=models.PROTECT, verbose_name="Создатель", null=True, blank=True
+    )
 
     def __str__(self):
         return self.name

@@ -11,3 +11,9 @@ class UserGroupsConst:
 
     ADMIN = "Администратор"
     MAIN_CURATOR = "Главный координатор"
+
+
+class FileTypeConst:
+    """Типы файлов"""
+
+    FOLDER_FILE = "FOLDER_FILE"

@@ -1,5 +1,6 @@
 from django.db import models
 
+from apps.base.models import File
 from apps.users.models import User
 
 
@@ -20,6 +21,8 @@ class Folder(models.Model):
         related_name="parent_folder_rm",
     )
     in_basket = models.BooleanField("В корзине", default=False)
+    head_folder = models.BooleanField("Главная папка с файлами", default=False)
+    files = models.ManyToManyField(File, verbose_name="Файлы папки", blank=True)
 
     class Meta:
         verbose_name = "Папка"
