@@ -11,8 +11,10 @@ import StateComponents from "../StateComponents";
 import PageHeaderCustom from "../../../components/PageHeaderCustom";
 import ListItems from "../../../components/ListItems";
 import {
+  deleteFileData,
   fileList,
   listFileData,
+  renameFileData,
   uploadFileChanger,
 } from "../../slice/sliceFile";
 
@@ -23,11 +25,19 @@ export default function ProtectedHomePage() {
   const stateFileListData = useSelector(listFileData);
   const stateFolderListStatus = useSelector(listFolderStatus);
   const stateFolderDelete = useSelector(deleteFolderData);
+  const stateFileDelete = useSelector(deleteFileData);
   const stateUploadFileChanger = useSelector(uploadFileChanger);
+  const stateRenameFileData = useSelector(renameFileData);
   useEffect(() => {
     dispatch(folderList());
     dispatch(fileList());
-  }, [stateNewFolder, stateFolderDelete, stateUploadFileChanger]);
+  }, [
+    stateNewFolder,
+    stateFolderDelete,
+    stateUploadFileChanger,
+    stateRenameFileData,
+    stateFileDelete,
+  ]);
 
   return (
     <StateComponents>

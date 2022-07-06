@@ -8,6 +8,7 @@ import {
   setActiveDrawerItem,
   setActiveFolderItem,
 } from "../../pages/slice/sliceBase";
+import { fileRename } from "../../pages/slice/sliceFile";
 
 export default function ModalRenameItem({
   visible,
@@ -20,6 +21,14 @@ export default function ModalRenameItem({
   const { id } = useParams();
   const dispatch = useDispatch();
   const [errorNamedFolder, setErrorNamedFolder] = useState(false);
+
+  const successRenameActions = () => {
+    setVisible(false);
+    form.resetFields();
+    setErrorNamedFolder({ status: false, message: "" });
+    dispatch(setActiveFolderItem({}));
+    dispatch(setActiveDrawerItem({ visible: false }));
+  };
   const confirmRename = (value) => {
     if (type === "folder") {
       dispatch(
@@ -30,11 +39,21 @@ export default function ModalRenameItem({
       )
         .then(unwrapResult)
         .then(() => {
-          setVisible(false);
-          form.resetFields();
-          setErrorNamedFolder({ status: false, message: "" });
-          dispatch(setActiveFolderItem({}));
-          dispatch(setActiveDrawerItem({ visible: false }));
+          successRenameActions();
+        })
+        .catch((err) => {
+          setErrorNamedFolder({ status: true, message: err.error[0] });
+        });
+    } else {
+      dispatch(
+        fileRename({
+          id: folder_id,
+          data: { name: value.name, parent_folder: id },
+        })
+      )
+        .then(unwrapResult)
+        .then(() => {
+          successRenameActions();
         })
         .catch((err) => {
           setErrorNamedFolder({ status: true, message: err.error[0] });

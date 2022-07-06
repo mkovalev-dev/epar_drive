@@ -28,12 +28,12 @@ import {
 import { useState } from "react";
 import ModalRenameItem from "./ModalRenameItem";
 import { unwrapResult } from "@reduxjs/toolkit";
-import NotificationButtonHardDelete from "../NotificationButtonHardDelete";
+import { fileDelete, fileHardDelete } from "../../pages/slice/sliceFile";
 
 export default function DrawerFolder() {
   const dispatch = useDispatch();
   const stateActiveDrawerItem = useSelector(activeDrawerItem);
-  const stateFolderDeleteStatus = useSelector(deleteFolderStatus);
+  // const stateFolderDeleteStatus = useSelector(deleteFolderStatus);
   const [visibleModalRename, setVisibleModalRename] = useState(false);
   return (
     <Drawer
@@ -141,44 +141,85 @@ export default function DrawerFolder() {
                     className="btn-text-custom"
                     // loading={stateFolderDeleteStatus === "loading"}
                     onClick={() => {
-                      dispatch(folderDelete(stateActiveDrawerItem.id))
-                        .then(unwrapResult)
-                        .then((res) => {
-                          notification.open({
-                            key: "hard-delete",
-                            message: `Папка перемещена в корзину!`,
-                            description: (
-                              <Button
-                                type="link"
-                                onClick={() => {
-                                  dispatch(folderHardDelete(res.id)).then(
-                                    () => {
-                                      notification.close("hard-delete");
-                                      notification.success({
-                                        key: "success-hard-delete",
-                                        message: "Папка удалена навсегда!",
-                                        style: {
-                                          width: 325,
-                                          borderRadius: "25px 25px 0 0",
-                                          marginBottom: "7px",
-                                        },
-                                        placement: "bottomLeft",
-                                      });
-                                    }
-                                  );
-                                }}
-                              >
-                                Удалить навсегда
-                              </Button>
-                            ),
-                            style: {
-                              width: 325,
-                              borderRadius: "25px 25px 0 0",
-                              marginBottom: "7px",
-                            },
-                            placement: "bottomLeft",
+                      if (stateActiveDrawerItem.type === "folder") {
+                        dispatch(folderDelete(stateActiveDrawerItem.id))
+                          .then(unwrapResult)
+                          .then((res) => {
+                            notification.open({
+                              key: "hard-delete",
+                              message: `Папка перемещена в корзину!`,
+                              description: (
+                                <Button
+                                  type="link"
+                                  onClick={() => {
+                                    dispatch(folderHardDelete(res.id)).then(
+                                      () => {
+                                        notification.close("hard-delete");
+                                        notification.success({
+                                          key: "success-hard-delete",
+                                          message: "Папка удалена навсегда!",
+                                          style: {
+                                            width: 325,
+                                            borderRadius: "25px 25px 0 0",
+                                            marginBottom: "7px",
+                                          },
+                                          placement: "bottomLeft",
+                                        });
+                                      }
+                                    );
+                                  }}
+                                >
+                                  Удалить навсегда
+                                </Button>
+                              ),
+                              style: {
+                                width: 325,
+                                borderRadius: "25px 25px 0 0",
+                                marginBottom: "7px",
+                              },
+                              placement: "bottomLeft",
+                            });
                           });
-                        });
+                      } else {
+                        dispatch(fileDelete(stateActiveDrawerItem.id))
+                          .then(unwrapResult)
+                          .then((res) => {
+                            notification.open({
+                              key: "hard-delete",
+                              message: `Файл перемещен в корзину!`,
+                              description: (
+                                <Button
+                                  type="link"
+                                  onClick={() => {
+                                    dispatch(fileHardDelete(res.id)).then(
+                                      () => {
+                                        notification.close("hard-delete");
+                                        notification.success({
+                                          key: "success-hard-delete",
+                                          message: "Файл удален навсегда!",
+                                          style: {
+                                            width: 325,
+                                            borderRadius: "25px 25px 0 0",
+                                            marginBottom: "7px",
+                                          },
+                                          placement: "bottomLeft",
+                                        });
+                                      }
+                                    );
+                                  }}
+                                >
+                                  Удалить навсегда
+                                </Button>
+                              ),
+                              style: {
+                                width: 325,
+                                borderRadius: "25px 25px 0 0",
+                                marginBottom: "7px",
+                              },
+                              placement: "bottomLeft",
+                            });
+                          });
+                      }
                       dispatch(setActiveFolderItem({}));
                       dispatch(setActiveDrawerItem({ visible: false }));
                     }}
