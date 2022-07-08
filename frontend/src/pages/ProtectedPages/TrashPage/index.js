@@ -8,21 +8,24 @@ import {
   listTrashFolderStatus,
   trashFolderList,
 } from "../../slice/sliceFolder";
+import { listTrashFileData, trashFileList } from "../../slice/sliceFile";
 
 export default function TrashPage() {
   const dispatch = useDispatch();
   const stateTrashFolderListData = useSelector(listTrashFolderData);
+  const stateTrashFileListData = useSelector(listTrashFileData);
   const stateTrashFolderListStatus = useSelector(listTrashFolderStatus);
 
   useEffect(() => {
     dispatch(trashFolderList());
+    dispatch(trashFileList());
   }, []);
 
   return (
     <StateComponents>
       <PageHeaderCustom title="Корзина" backIcon={false} />
       <ListItems
-        listData={[...stateTrashFolderListData]}
+        listData={[...stateTrashFolderListData, ...stateTrashFileListData]}
         status={stateTrashFolderListStatus}
         trash={true}
       />

@@ -12,6 +12,10 @@ const initialState = {
   deleteFileData: {},
   deleteFileStatus: "idle",
   deleteFileError: null,
+
+  listTrashFileData: [],
+  listTrashFileStatus: "idle",
+  listTrashFileError: null,
 };
 
 export const fileList = createAsyncThunk(
@@ -62,6 +66,18 @@ export const fileHardDelete = createAsyncThunk(
   }
 );
 
+export const trashFileList = createAsyncThunk(
+  "file/trashFileList",
+  async (_, { rejectWithValue }) => {
+    const response = await api.get("file/trash/");
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
 const fileSlice = createSlice({
   name: "file",
   initialState,
@@ -99,6 +115,18 @@ const fileSlice = createSlice({
       state.deleteFileStatus = "failed";
       state.deleteFileError = action.payload.errors;
     },
+
+    [trashFileList.pending]: (state) => {
+      state.listTrashFileStatus = "loading";
+    },
+    [trashFileList.fulfilled]: (state, action) => {
+      state.listTrashFileStatus = "succeeded";
+      state.listTrashFileData = action.payload;
+    },
+    [trashFileList.rejected]: (state, action) => {
+      state.listTrashFileStatus = "failed";
+      state.listTrashFileError = action.payload.errors;
+    },
   },
 });
 
@@ -117,3 +145,7 @@ export const renameFileStatus = (state) => state.file.renameFileStatus;
 export const deleteFileData = (state) => state.file.deleteFileData;
 export const deleteFileStatus = (state) => state.file.deleteFileStatus;
 export const deleteFileError = (state) => state.file.deleteFileError;
+
+export const listTrashFileData = (state) => state.file.listTrashFileData;
+export const listTrashFileStatus = (state) => state.file.listTrashFileStatus;
+export const listTrashFileError = (state) => state.file.listTrashFileError;

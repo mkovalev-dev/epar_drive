@@ -28,7 +28,11 @@ import {
 import { useState } from "react";
 import ModalRenameItem from "./ModalRenameItem";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { fileDelete, fileHardDelete } from "../../pages/slice/sliceFile";
+import {
+  fileDelete,
+  fileHardDelete,
+  trashFileList,
+} from "../../pages/slice/sliceFile";
 
 export default function DrawerFolder() {
   const dispatch = useDispatch();
@@ -70,7 +74,7 @@ export default function DrawerFolder() {
         <Col span={5}>
           <div style={{ marginTop: "4px", width: "100%" }}>
             <span style={{ color: "white", margin: 0, fontSize: "18px" }}>
-              {stateActiveDrawerItem?.name}
+              {stateActiveDrawerItem?.name?.slice(0, 15) + "..."}
             </span>
           </div>
         </Col>
@@ -91,11 +95,19 @@ export default function DrawerFolder() {
                     className="btn-danger-custom"
                     icon={<FireOutlined />}
                     onClick={() => {
-                      dispatch(folderHardDelete(stateActiveDrawerItem.id)).then(
-                        () => {
+                      if (stateActiveDrawerItem.type === "folder") {
+                        dispatch(
+                          folderHardDelete(stateActiveDrawerItem.id)
+                        ).then(() => {
                           dispatch(trashFolderList());
-                        }
-                      );
+                        });
+                      } else {
+                        dispatch(fileHardDelete(stateActiveDrawerItem.id)).then(
+                          () => {
+                            dispatch(trashFileList());
+                          }
+                        );
+                      }
                       dispatch(setActiveFolderItem({}));
                       dispatch(setActiveDrawerItem({ visible: false }));
                     }}
