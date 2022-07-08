@@ -52,7 +52,7 @@ class FolderDestroyAPIView(MoveItemInBasketMixin):
 
 
 class TrashFolderListAPIView(ListAPIView):
-    """Список папок и файлов в корзине"""
+    """Список папок в корзине"""
 
     permission_classes = (IsAuthenticated,)
     serializer_class = FolderListSerializer
@@ -66,5 +66,7 @@ class TrashFolderListAPIView(ListAPIView):
 
 
 class HardDeleteFolderDestroyAPIView(DestroyAPIView):
+    """Удалене папки навсегда"""
+
     permission_classes = (IsAuthenticated,)
     queryset = Folder.objects.all()

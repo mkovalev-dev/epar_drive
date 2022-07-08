@@ -53,3 +53,17 @@ class FileDestroyAPIView(MoveItemInBasketMixin):
 class HardDeleteFileDestroyAPIView(DestroyAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = File.objects.all()
+
+
+class TrashFileListAPIView(ListAPIView):
+    """Список файлов в корзине"""
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FileInFolderSerializer
+    pagination_class = None
+    queryset = None
+
+    def get_queryset(self):
+        return Folder.objects.get(head_folder=True).files.filter(
+            creator=self.request.user, in_basket=True
+        )

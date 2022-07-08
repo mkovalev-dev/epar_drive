@@ -4,7 +4,7 @@ from apps.file.api.views import (
     UploadHeadFileInFolderCreateAPIView,
     FileInFolderListAPIView,
     FileDestroyAPIView,
-    HardDeleteFileDestroyAPIView,
+    HardDeleteFileDestroyAPIView, TrashFileListAPIView,
 )
 
 app_name = "file"
@@ -27,4 +27,5 @@ urlpatterns = [
         HardDeleteFileDestroyAPIView.as_view(),
         name="hard-delete-file",
     ),
+    path("trash/", TrashFileListAPIView.as_view(), name="trash-file-list"),
 ]

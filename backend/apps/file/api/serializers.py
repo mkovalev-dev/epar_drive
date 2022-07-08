@@ -49,11 +49,12 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
             size=size,
             file_type=FileType.objects.get(name=FileTypeConst.FOLDER_FILE),
             creator=self.context.get("user"),
+
         )
-        if self.context.get("parent_folder"):
-            pass
+        if parent_id := self.context.get("parent_folder"):
+            folder = Folder.objects.get(id=True)
         else:
-            folder = Folder.objects.get(head_folder=True)
+            folder = Folder.objects.get(id=parent_id)
         folder.files.add(instance)
 
         return instance
