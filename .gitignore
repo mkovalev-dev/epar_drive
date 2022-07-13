@@ -6,4 +6,4 @@
 backend/media
 backend/django_static
 
-aspnetserver/bin
+aspnetserver/bin/
