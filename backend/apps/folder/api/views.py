@@ -4,6 +4,7 @@ from rest_framework.generics import (
     ListAPIView,
     DestroyAPIView,
     UpdateAPIView,
+    RetrieveAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -41,7 +42,10 @@ class FolderListAPIView(ListAPIView):
 
     def get_queryset(self):
         return Folder.objects.all().filter(
-            in_basket=False, creator=self.request.user, head_folder=False
+            in_basket=False,
+            creator=self.request.user,
+            head_folder=False,
+            parent_folder_id__isnull=True,
         )
 
 
@@ -70,3 +74,20 @@ class HardDeleteFolderDestroyAPIView(DestroyAPIView):
 
     permission_classes = (IsAuthenticated,)
     queryset = Folder.objects.all()
+
+
+class FolderListRetrieveAPIView(ListAPIView):
+    """Просмотр папок в папке"""
+
+    permission_classes = (IsAuthenticated,)
+    queryset = None
+    serializer_class = FolderListSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return Folder.objects.all().filter(
+            in_basket=False,
+            creator=self.request.user,
+            head_folder=False,
+            parent_folder_id=self.kwargs.get("pk"),
+        )

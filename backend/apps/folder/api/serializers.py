@@ -12,7 +12,7 @@ class CreateFolderSerializer(serializers.ModelSerializer):
         """Проверяет наличие папки с таким же названием у пользователя"""
         if Folder.objects.filter(
             name=attrs.get("name"),
-            parent_folder=self.context.get("parent_folder"),
+            parent_folder=self.context.get("parent_folder", None),
             creator=self.context.get("user"),
         ).exists():
             raise serializers.ValidationError(
@@ -24,7 +24,9 @@ class CreateFolderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = Folder.objects.create(
-            **validated_data, creator=self.context.get("user")
+            **validated_data,
+            creator=self.context.get("user"),
+            parent_folder_id=self.context.get("parent_folder", None),
         )
         return instance
 

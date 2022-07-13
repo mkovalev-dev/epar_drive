@@ -1,4 +1,5 @@
 from django.db import models
+from django.dispatch import receiver
 
 from apps.base.models import File
 from apps.users.models import User
@@ -14,7 +15,7 @@ class Folder(models.Model):
     )
     parent_folder = models.ForeignKey(
         "self",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         verbose_name="Родительская папка",
@@ -27,3 +28,13 @@ class Folder(models.Model):
     class Meta:
         verbose_name = "Папка"
         verbose_name_plural = "Папки"
+
+
+@receiver(models.signals.pre_delete, sender=Folder)
+def auto_delete_file(sender, instance, **kwargs):
+    """
+    Удаляет файлы в папках.
+    """
+    if files := instance.files.all():
+        for file in files:
+            file.delete()

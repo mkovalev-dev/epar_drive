@@ -49,12 +49,11 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
             size=size,
             file_type=FileType.objects.get(name=FileTypeConst.FOLDER_FILE),
             creator=self.context.get("user"),
-
         )
         if parent_id := self.context.get("parent_folder"):
-            folder = Folder.objects.get(id=True)
-        else:
             folder = Folder.objects.get(id=parent_id)
+        else:
+            folder = Folder.objects.get(head_folder=True)
         folder.files.add(instance)
 
         return instance
@@ -72,7 +71,20 @@ class FileInFolderSerializer(serializers.ModelSerializer):
     """Сериализатор списка файлов"""
 
     type = serializers.CharField(source="prefix")
+    src = serializers.CharField(source="path.url")
 
     class Meta:
         model = File
-        fields = ("name", "id", "type")
+        fields = (
+            "name",
+            "id",
+            "type",
+            "src",
+        )
+
+
+class FileSaveSerializer(serializers.Serializer):
+    file = serializers.FileField()
+
+    def update(self, instance, validated_data):
+        print(1)

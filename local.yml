@@ -46,6 +46,16 @@ services:
       - NODE_ENV=development
       - REACT_APP_API_URL=http://127.0.0.1/api/
 
+  epar_drive_aspnet:
+    container_name: epar_drive_aspnet
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: ./aspnetserver
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+
 volumes:
     static_volume: {}
     media_volume: {}

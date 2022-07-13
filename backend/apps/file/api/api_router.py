@@ -1,10 +1,14 @@
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
 from apps.file.api.views import (
     UploadHeadFileInFolderCreateAPIView,
-    FileInFolderListAPIView,
+    FileInHeadFolderListAPIView,
     FileDestroyAPIView,
-    HardDeleteFileDestroyAPIView, TrashFileListAPIView,
+    HardDeleteFileDestroyAPIView,
+    TrashFileListAPIView,
+    FileInFolderListAPIView,
+    RetrieveFileSrcAPIView, FileSaveAPIVIEW,
 )
 
 app_name = "file"
@@ -15,7 +19,17 @@ urlpatterns = [
         UploadHeadFileInFolderCreateAPIView.as_view(),
         name="upload-head-file",
     ),
-    path("list/", FileInFolderListAPIView.as_view(), name="list-file"),
+    path(
+        "upload/<int:parent_folder>/",
+        UploadHeadFileInFolderCreateAPIView.as_view(),
+        name="upload-head-file-in-folder",
+    ),
+    path("list/", FileInHeadFolderListAPIView.as_view(), name="list-file"),
+    path(
+        "list/retrieve/<int:pk>/",
+        FileInFolderListAPIView.as_view(),
+        name="list-file-in-folder",
+    ),
     path(
         "rename/<int:pk>/",
         UploadHeadFileInFolderCreateAPIView.as_view(),
@@ -28,4 +42,10 @@ urlpatterns = [
         name="hard-delete-file",
     ),
     path("trash/", TrashFileListAPIView.as_view(), name="trash-file-list"),
+    path(
+        "retrieve/file/<int:pk>/",
+        RetrieveFileSrcAPIView.as_view(),
+        name="retrieve-file",
+    ),
+    path("save/", FileSaveAPIVIEW.as_view(), name="file-save")
 ]

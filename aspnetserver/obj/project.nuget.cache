@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "dgSpecHash": "yaXpBrbQ1wpoUOkt7njKUh/7XC6i1pRNzd6bV9x84kT5dRC/JYQ4ljkS2Y5vRtzCLBNH/gGNUEXEfMbUGZvdfQ==",
+  "success": true,
+  "projectFilePath": "/Users/maximkovalev/Projects/open_xlsx_files/open_xlsx_files/open_xlsx_files.csproj",
+  "expectedPackageFiles": [
+    "/Users/maximkovalev/.nuget/packages/harfbuzzsharp/2.8.2-preview.209/harfbuzzsharp.2.8.2-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/harfbuzzsharp.nativeassets.macos/2.8.2-preview.209/harfbuzzsharp.nativeassets.macos.2.8.2-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/harfbuzzsharp.nativeassets.win32/2.8.2-preview.209/harfbuzzsharp.nativeassets.win32.2.8.2-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/microsoft.netcore.platforms/2.0.0/microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/newtonsoft.json/11.0.2/newtonsoft.json.11.0.2.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/skiasharp/2.88.0-preview.209/skiasharp.2.88.0-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/skiasharp.harfbuzz/2.88.0-preview.209/skiasharp.harfbuzz.2.88.0-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/skiasharp.nativeassets.macos/2.88.0-preview.209/skiasharp.nativeassets.macos.2.88.0-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/skiasharp.nativeassets.win32/2.88.0-preview.209/skiasharp.nativeassets.win32.2.88.0-preview.209.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/swashbuckle.aspnetcore/6.2.3/swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/swashbuckle.aspnetcore.swagger/6.2.3/swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.2.3/swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.2.3/swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.compression.net.core/20.2.0.38/syncfusion.compression.net.core.20.2.0.38.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.ej2.aspnet.core/20.2.0.36/syncfusion.ej2.aspnet.core.20.2.0.36.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.ej2.spreadsheet.aspnet.core/20.2.0.36/syncfusion.ej2.spreadsheet.aspnet.core.20.2.0.36.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.licensing/20.2.0.38/syncfusion.licensing.20.2.0.38.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.pdf.net.core/20.2.0.38/syncfusion.pdf.net.core.20.2.0.38.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.skiasharphelper.net.core/20.2.0.38/syncfusion.skiasharphelper.net.core.20.2.0.38.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.xlsio.net.core/20.2.0.38/syncfusion.xlsio.net.core.20.2.0.38.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/syncfusion.xlsiorenderer.net.core/20.2.0.38/syncfusion.xlsiorenderer.net.core.20.2.0.38.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/system.memory/4.5.3/system.memory.4.5.3.nupkg.sha512",
+    "/Users/maximkovalev/.nuget/packages/system.text.encoding.codepages/4.4.0/system.text.encoding.codepages.4.4.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "open_xlsx_files depends on Syncfusion.EJ2.Spreadsheet.AspNet.Core (>= 20.2.0.3) but Syncfusion.EJ2.Spreadsheet.AspNet.Core 20.2.0.3 was not found. An approximate best match of Syncfusion.EJ2.Spreadsheet.AspNet.Core 20.2.0.36 was resolved.",
+      "libraryId": "Syncfusion.EJ2.Spreadsheet.AspNet.Core",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
+}
