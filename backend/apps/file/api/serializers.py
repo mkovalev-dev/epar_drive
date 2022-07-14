@@ -2,23 +2,8 @@ from rest_framework import serializers
 
 from apps.base.constants import FileTypeConst
 from apps.base.models import File, FileType
+from apps.file.utils import get_prefix_file
 from apps.folder.models import Folder
-
-
-class ContentTypeConst:
-    XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    PNG = "image/png"
-    JPEG = "image/jpeg"
-
-
-class PrefixFileConst:
-    XLSX = ".xlsx"
-    PPTX = ".pptx"
-    DOCX = ".docx"
-    PNG = ".png"
-    JPEG = ".jpeg"
 
 
 class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
@@ -28,19 +13,10 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         file = validated_data.pop("path", None)
-        prefix = ""
         size = file.size / 1000000
         name = file.name
-        if file.content_type == ContentTypeConst.XLSX:
-            prefix = PrefixFileConst.XLSX
-        elif file.content_type == ContentTypeConst.PPTX:
-            prefix = PrefixFileConst.PPTX
-        elif file.content_type == ContentTypeConst.DOCX:
-            prefix = PrefixFileConst.DOCX
-        elif file.content_type == ContentTypeConst.PNG:
-            prefix = PrefixFileConst.PNG
-        elif file.content_type == ContentTypeConst.JPEG:
-            prefix = PrefixFileConst.JPEG
+
+        prefix = get_prefix_file(file.content_type)
 
         instance = File.objects.create(
             path=file,
@@ -83,8 +59,32 @@ class FileInFolderSerializer(serializers.ModelSerializer):
         )
 
 
-class FileSaveSerializer(serializers.Serializer):
-    file = serializers.FileField()
+class FileSaveSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(source="path", write_only=True)
 
     def update(self, instance, validated_data):
-        print(1)
+        file = validated_data.pop("path", None)
+        size = file.size / 1000000
+        version_count = instance.file_version.all().count() + 1
+        name = f"Версия_{version_count}_{instance.name}"
+        file.name = name
+        prefix = get_prefix_file(file.content_type)
+        instance_version = File.objects.create(
+            path=file,
+            name=name,
+            prefix=prefix,
+            size=size,
+            file_type=FileType.objects.get(name=FileTypeConst.VERSION_FILE),
+            creator=self.context.get("user"),
+        )
+        instance.file_version.add(instance_version)
+        return instance
+
+    class Meta:
+        model = File
+        fields = (
+            "file",
+            "name",
+        )
+        extra_kwargs = {"name": {"required": False}}
+

@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/dotnet/aspnet AS base
 WORKDIR /app
-EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk AS build
 WORKDIR /src
 COPY ["open_xlsx_files.csproj", "./"]

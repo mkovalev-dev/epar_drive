@@ -17,3 +17,4 @@ class FileTypeConst:
     """Типы файлов"""
 
     FOLDER_FILE = "FOLDER_FILE"
+    VERSION_FILE = "VERSION_FILE"

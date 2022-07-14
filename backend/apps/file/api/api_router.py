@@ -8,7 +8,8 @@ from apps.file.api.views import (
     HardDeleteFileDestroyAPIView,
     TrashFileListAPIView,
     FileInFolderListAPIView,
-    RetrieveFileSrcAPIView, FileSaveAPIVIEW,
+    RetrieveFileSrcAPIView,
+    FileSaveAPIVIEW,
 )
 
 app_name = "file"
@@ -47,5 +48,5 @@ urlpatterns = [
         RetrieveFileSrcAPIView.as_view(),
         name="retrieve-file",
     ),
-    path("save/", FileSaveAPIVIEW.as_view(), name="file-save")
+    path("save/<int:pk>/", FileSaveAPIVIEW.as_view(), name="file-save"),
 ]

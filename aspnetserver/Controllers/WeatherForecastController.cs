@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Syncfusion.EJ2.Spreadsheet;
 
 namespace open_xlsx_files.Controllers;
@@ -39,7 +40,7 @@ public class SpreadsheetController : Controller
     //To open excel file
     [AcceptVerbs("Post")]
     [HttpPost]
-    //[EnableCors("AllowAllOrigins")]
+    [DisableCors]
     [Route("Open")]
     public IActionResult Open(IFormCollection openRequest)
     {
@@ -51,6 +52,7 @@ public class SpreadsheetController : Controller
     //To save as excel file
     [AcceptVerbs("Post")]
     [HttpPost]
+    [DisableCors]
     [Route("Save")]
     public IActionResult Save(SaveSettings saveSettings)
     {

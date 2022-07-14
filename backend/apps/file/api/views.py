@@ -18,7 +18,8 @@ from apps.base.api.views import MoveItemInBasketMixin
 from apps.base.models import File
 from apps.file.api.serializers import (
     UploadHeadFileInFolderSerializer,
-    FileInFolderSerializer, FileSaveSerializer,
+    FileInFolderSerializer,
+    FileSaveSerializer,
 )
 from apps.folder.models import Folder
 
@@ -99,10 +100,18 @@ class RetrieveFileSrcAPIView(RetrieveAPIView):
     serializer_class = FileInFolderSerializer
     queryset = File.objects.all()
 
+    def get_object(self):
+        return (
+            File.objects.get(id=self.kwargs.get("pk"))
+            .file_version.all()
+            .order_by("-created_date")
+            .first()
+        )
 
-class FileSaveAPIVIEW(APIView):
+
+class FileSaveAPIVIEW(UpdateAPIView):
+    """Сохраняет новую версию файла"""
+
     permission_classes = (IsAuthenticated,)
     serializer_class = FileSaveSerializer
-
-    def post(self, *args, **kwargs):
-        print(1)
+    queryset = File.objects.all()
