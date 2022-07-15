@@ -13,6 +13,7 @@ from apps.base.api.views import MoveItemInBasketMixin
 from apps.folder.api.serializers import (
     CreateFolderSerializer,
     FolderListSerializer,
+    FolderInfoPageHeaderSerializer,
 )
 from apps.folder.models import Folder
 
@@ -91,3 +92,11 @@ class FolderListRetrieveAPIView(ListAPIView):
             head_folder=False,
             parent_folder_id=self.kwargs.get("pk"),
         )
+
+
+class FolderInfoPageHeaderRetrieveAPIVIew(RetrieveAPIView):
+    """Возвращает информацию для хедера с информацией о папке"""
+
+    permission_classes = (IsAuthenticated,)
+    queryset = Folder.objects.all()
+    serializer_class = FolderInfoPageHeaderSerializer

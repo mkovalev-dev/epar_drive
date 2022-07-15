@@ -1,8 +1,3 @@
-import os
-
-from django.views.decorators.csrf import csrf_exempt
-from exceltojson import excel2json
-from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -11,8 +6,6 @@ from rest_framework.generics import (
     RetrieveAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from apps.base.api.views import MoveItemInBasketMixin
 from apps.base.models import File
@@ -20,6 +13,7 @@ from apps.file.api.serializers import (
     UploadHeadFileInFolderSerializer,
     FileInFolderSerializer,
     FileSaveSerializer,
+    DrawerInfoFileSerializer,
 )
 from apps.folder.models import Folder
 
@@ -74,9 +68,7 @@ class TrashFileListAPIView(ListAPIView):
     queryset = None
 
     def get_queryset(self):
-        return Folder.objects.get(head_folder=True).files.filter(
-            creator=self.request.user, in_basket=True
-        )
+        return File.objects.filter(creator=self.request.user, in_basket=True)
 
 
 class FileInFolderListAPIView(ListAPIView):
@@ -101,12 +93,15 @@ class RetrieveFileSrcAPIView(RetrieveAPIView):
     queryset = File.objects.all()
 
     def get_object(self):
-        return (
-            File.objects.get(id=self.kwargs.get("pk"))
-            .file_version.all()
-            .order_by("-created_date")
-            .first()
-        )
+        if File.objects.get(id=self.kwargs.get("pk")).file_version.all().exists():
+            return (
+                File.objects.get(id=self.kwargs.get("pk"))
+                .file_version.all()
+                .order_by("-created_date")
+                .first()
+            )
+        else:
+            return File.objects.get(id=self.kwargs.get("pk"))
 
 
 class FileSaveAPIVIEW(UpdateAPIView):
@@ -114,4 +109,12 @@ class FileSaveAPIVIEW(UpdateAPIView):
 
     permission_classes = (IsAuthenticated,)
     serializer_class = FileSaveSerializer
+    queryset = File.objects.all()
+
+
+class DrawerInfoFileRetrieveAPIView(RetrieveAPIView):
+    """Отдает информацию о файле в выпадающем меню действий"""
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = DrawerInfoFileSerializer
     queryset = File.objects.all()

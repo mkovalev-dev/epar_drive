@@ -53,6 +53,12 @@ class File(models.Model):
     )
     in_basket = models.BooleanField("В корзине", default=False)
     file_version = models.ManyToManyField("self", verbose_name="Версии файлов")
+    updated_date = models.DateTimeField("Дата обновления файла", auto_now=True)
+
+    @property
+    def last_version(self):
+        """Последняя версия файла"""
+        return self.file_version.all().order_by("-created_date").first()
 
     def __str__(self):
         return self.name

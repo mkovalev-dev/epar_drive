@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers, status
 from rest_framework.response import Response
 
@@ -28,6 +29,8 @@ class CreateFolderSerializer(serializers.ModelSerializer):
             creator=self.context.get("user"),
             parent_folder_id=self.context.get("parent_folder", None),
         )
+        if parent := instance.parent_folder:
+            parent.updated_date = timezone.now()
         return instance
 
     class Meta:
@@ -46,4 +49,40 @@ class FolderListSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "type",
+        )
+
+
+class FolderInfoPageHeaderSerializer(serializers.ModelSerializer):
+    """Сериализатор информации в заголовке папки"""
+
+    size = serializers.FloatField(source="size_folder")
+    breadcrump = serializers.SerializerMethodField(read_only=True)
+
+    def get_breadcrump(self, obj):
+        data = []
+        data_reversed = []
+        data.append({"path": f"/folder/{obj.id}", "breadcrumbName": obj.name})
+        instance = obj.parent_folder
+        if instance:
+            while instance.parent_folder_id:
+                data.append(
+                    {"path": f"/folder/{instance.id}", "breadcrumbName": instance.name}
+                )
+                instance = instance.parent_folder
+            data.append(
+                {"path": f"/folder/{instance.id}", "breadcrumbName": instance.name}
+            )
+        else:
+            data.append({"path": f"/", "breadcrumbName": "На главную"})
+        for item in data[::-1]:
+            data_reversed.append(item)
+
+        return data_reversed
+
+    class Meta:
+        model = Folder
+        fields = (
+            "name",
+            "size",
+            "breadcrump",
         )

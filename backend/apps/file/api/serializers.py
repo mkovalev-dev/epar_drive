@@ -1,9 +1,11 @@
+from django.utils import timezone
 from rest_framework import serializers
 
 from apps.base.constants import FileTypeConst
 from apps.base.models import File, FileType
 from apps.file.utils import get_prefix_file
 from apps.folder.models import Folder
+from apps.users.api.serializers import UserSerializer
 
 
 class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
@@ -31,6 +33,9 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
         else:
             folder = Folder.objects.get(head_folder=True)
         folder.files.add(instance)
+
+        folder.updated_date = timezone.now()
+        folder.save()
 
         return instance
 
@@ -60,6 +65,8 @@ class FileInFolderSerializer(serializers.ModelSerializer):
 
 
 class FileSaveSerializer(serializers.ModelSerializer):
+    """Сериализатор сохранения новой версии файла"""
+
     file = serializers.FileField(source="path", write_only=True)
 
     def update(self, instance, validated_data):
@@ -78,7 +85,7 @@ class FileSaveSerializer(serializers.ModelSerializer):
             creator=self.context.get("user"),
         )
         instance.file_version.add(instance_version)
-        return instance
+        return instance_version
 
     class Meta:
         model = File
@@ -88,3 +95,21 @@ class FileSaveSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {"name": {"required": False}}
 
+
+class DrawerInfoFileSerializer(serializers.ModelSerializer):
+    """Сериализатор информации в выпадающем меню действий"""
+
+    url = serializers.CharField(source="last_version.path.url")
+    creator = UserSerializer()
+
+    class Meta:
+        model = File
+        fields = (
+            "id",
+            "name",
+            "size",
+            "created_date",
+            "updated_date",
+            "url",
+            "creator",
+        )

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.dispatch import receiver
 
 from apps.base.models import File
@@ -24,6 +25,20 @@ class Folder(models.Model):
     in_basket = models.BooleanField("В корзине", default=False)
     head_folder = models.BooleanField("Главная папка с файлами", default=False)
     files = models.ManyToManyField(File, verbose_name="Файлы папки", blank=True)
+    updated_date = models.DateTimeField("Дата обновления папки", auto_now=True)
+
+    @property
+    def size_folder(self):
+        """Вычисление размера папки"""
+        size = 0.0
+        files = self.files.all()
+        for file in files:
+            if file.file_version.all().count() > 0:
+                size += file.file_version.all().order_by("-created_date").first().size
+            else:
+                size += file.size
+
+        return size
 
     class Meta:
         verbose_name = "Папка"

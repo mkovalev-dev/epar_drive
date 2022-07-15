@@ -7,6 +7,7 @@ from apps.folder.api.views import (
     TrashFolderListAPIView,
     HardDeleteFolderDestroyAPIView,
     FolderListRetrieveAPIView,
+    FolderInfoPageHeaderRetrieveAPIVIew,
 )
 
 app_name = "folder"
@@ -26,5 +27,10 @@ urlpatterns = [
         "list/retrieve/<int:pk>/",
         FolderListRetrieveAPIView.as_view(),
         name="folder-list-retrieve",
+    ),
+    path(
+        "header/info/retrieve/<int:pk>/",
+        FolderInfoPageHeaderRetrieveAPIVIew.as_view(),
+        name="header-info-retrieve",
     ),
 ]

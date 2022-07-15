@@ -10,6 +10,7 @@ from apps.file.api.views import (
     FileInFolderListAPIView,
     RetrieveFileSrcAPIView,
     FileSaveAPIVIEW,
+    DrawerInfoFileRetrieveAPIView,
 )
 
 app_name = "file"
@@ -49,4 +50,9 @@ urlpatterns = [
         name="retrieve-file",
     ),
     path("save/<int:pk>/", FileSaveAPIVIEW.as_view(), name="file-save"),
+    path(
+        "drawer/retrieve/<int:pk>/",
+        DrawerInfoFileRetrieveAPIView.as_view(),
+        name="drawer-retrieve-file",
+    ),
 ]
