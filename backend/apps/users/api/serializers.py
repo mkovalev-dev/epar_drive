@@ -39,3 +39,19 @@ class UserSerializer(serializers.ModelSerializer):
             "groups",
         )
         read_only_fields = fields
+
+
+class UserShareSerializer(serializers.ModelSerializer):
+    """Сериализатор для списка пользователей в модуле поделиться"""
+
+    groups = UserGroupSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "patronymic",
+            "groups",
+        )

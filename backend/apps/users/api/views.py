@@ -4,10 +4,16 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework import response, status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.users.api.serializers import LoginSerializer, UserSerializer
+from apps.users.api.serializers import (
+    LoginSerializer,
+    UserSerializer,
+    UserShareSerializer,
+)
+from apps.users.models import User
 from apps.users.utils import IsNotAuthenticated
 
 
@@ -46,3 +52,12 @@ class UserLogoutApi(APIView):
     def get(self, request):
         logout(request)
         return response.Response("Exit", status=status.HTTP_200_OK)
+
+
+class UserShareListAPIView(ListAPIView):
+    """Возвращает список пользователей с которыми можно поделиться папкой или файлом"""
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserShareSerializer
+    queryset = User.objects.all()
+    pagination_class = None
