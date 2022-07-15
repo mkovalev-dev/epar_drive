@@ -1,13 +1,23 @@
 import { Button, Divider, PageHeader, Select } from "antd";
 import { AppstoreOutlined, OrderedListOutlined } from "@ant-design/icons";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function PageHeaderCustom({ title, backIcon }) {
+export default function PageHeaderCustom({ title, back, breadcrumb = <></> }) {
+  const navigate = useNavigate();
   return (
     <>
       <PageHeader
-        backIcon={backIcon}
+        backIcon={back}
         title={title}
+        onBack={() => {
+          if (back) {
+            navigate(-1);
+          } else {
+            return false;
+          }
+        }}
+        breadcrumb={breadcrumb}
         extra={[
           <Select
             defaultValue="name"

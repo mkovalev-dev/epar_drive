@@ -5,10 +5,12 @@ import ModalCreateFolder from "./FolderComponents/ModalCreateFolder";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUploadFileChanger } from "../pages/slice/sliceFile";
+import { useParams } from "react-router-dom";
 
 export default function HeadActionCreate() {
   const [visibleModalCreate, setVisibleModalCreate] = useState(false);
   const dispatch = useDispatch();
+  const { id } = useParams();
   return (
     <>
       <Button
@@ -23,7 +25,7 @@ export default function HeadActionCreate() {
       <Upload
         className="upload-file-button"
         showUploadList={false}
-        action="/api/file/upload/"
+        action={id ? `/api/file/upload/${id}/` : "/api/file/upload/"}
         multiple
         accept=".xls,.xlsx,.doc,.docx, .png,.jpg"
         headers={{ "X-CSRFTOKEN": Cookies.get("csrftoken") }}

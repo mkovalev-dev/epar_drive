@@ -23,6 +23,7 @@ export default function ListItems({ listData, status, trash = false }) {
               title={item.name}
               id={item.id}
               isTrash={trash}
+              src={item?.src ? item.src : null}
             />
           ) : (
             <Skeleton />

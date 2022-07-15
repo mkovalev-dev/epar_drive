@@ -5,6 +5,8 @@ import { checkLoginParams } from "./pages/slice/sliceUsers";
 import { useSelector } from "react-redux";
 import ProtectedHomePage from "./pages/ProtectedPages/HomePage";
 import TrashPage from "./pages/ProtectedPages/TrashPage";
+import FolderPage from "./pages/ProtectedPages/FolderPage";
+import ViewSheet from "./components/FolderComponents/ViewSheet";
 
 function App() {
   const stateCheckLoginSelector = useSelector(checkLoginParams);
@@ -15,7 +17,9 @@ function App() {
         path="/"
         element={stateCheckLoginSelector ? <ProtectedHomePage /> : <HomePage />}
       />
+      <Route path="/folder/:id" element={<FolderPage />} />
       <Route path="/trash" element={<TrashPage />} />
+      <Route path="/xlsx/viewer/:id" element={<ViewSheet />} />
     </Routes>
   );
 }

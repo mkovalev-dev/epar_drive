@@ -41,7 +41,7 @@ export default function ProtectedHomePage() {
 
   return (
     <StateComponents>
-      <PageHeaderCustom title="Файлы" backIcon={false} />
+      <PageHeaderCustom title="Файлы" back={false} />
       <ListItems
         listData={[...stateFolderListData, ...stateFileListData]}
         status={stateFolderListStatus}

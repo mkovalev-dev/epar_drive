@@ -6,6 +6,10 @@ const initialState = {
   listFileStatus: "idle",
   listFileError: null,
 
+  listFileInFolderData: [],
+  listFileInFolderStatus: "idle",
+  listFileInFolderError: null,
+
   renameFileData: null,
   renameFileStatus: "idle",
 
@@ -16,12 +20,32 @@ const initialState = {
   listTrashFileData: [],
   listTrashFileStatus: "idle",
   listTrashFileError: null,
+
+  retrieveFileData: null,
+  retrieveFileStatus: "idle",
+  retrieveFileError: null,
+
+  drawerRetrieveFileData: null,
+  drawerRetrieveFileStatus: "idle",
+  drawerRetrieveFileError: null,
 };
 
 export const fileList = createAsyncThunk(
   "file/folderList",
   async (_, { rejectWithValue }) => {
     const response = await api.get("file/list/");
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
+export const fileInFolderList = createAsyncThunk(
+  "file/fileInFolderList",
+  async (id, { rejectWithValue }) => {
+    const response = await api.get(`file/list/retrieve/${id}/`);
     const dataResponse = await response.json();
     if (!response.ok) {
       return rejectWithValue(dataResponse);
@@ -78,6 +102,47 @@ export const trashFileList = createAsyncThunk(
   }
 );
 
+export const retrieveFile = createAsyncThunk(
+  "file/retrieveFile",
+  async (id, { rejectWithValue }) => {
+    const response = await api.get(`file/retrieve/file/${id}/`);
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
+export const saveFile = createAsyncThunk(
+  "file/retrieveFile",
+  async ({ file, id }, { rejectWithValue }) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.put(`file/save/${id}/`, {
+      body: formData,
+      timeout: false,
+    });
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
+export const drawerRetrieveFile = createAsyncThunk(
+  "file/drawerRetrieveFile",
+  async (id, { rejectWithValue }) => {
+    const response = await api.get(`file/drawer/retrieve/${id}/`);
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
 const fileSlice = createSlice({
   name: "file",
   initialState,
@@ -97,6 +162,18 @@ const fileSlice = createSlice({
     [fileList.rejected]: (state, action) => {
       state.listFileStatus = "failed";
       state.listFileError = action.payload.errors;
+    },
+
+    [fileInFolderList.pending]: (state) => {
+      state.listFileInFolderStatus = "loading";
+    },
+    [fileInFolderList.fulfilled]: (state, action) => {
+      state.listFileInFolderStatus = "succeeded";
+      state.listFileInFolderData = action.payload;
+    },
+    [fileInFolderList.rejected]: (state, action) => {
+      state.listFileInFolderStatus = "failed";
+      state.listFileInFolderError = action.payload.errors;
     },
 
     [fileRename.fulfilled]: (state, action) => {
@@ -127,6 +204,30 @@ const fileSlice = createSlice({
       state.listTrashFileStatus = "failed";
       state.listTrashFileError = action.payload.errors;
     },
+
+    [retrieveFile.pending]: (state) => {
+      state.retrieveFileStatus = "loading";
+    },
+    [retrieveFile.fulfilled]: (state, action) => {
+      state.retrieveFileStatus = "succeeded";
+      state.retrieveFileData = action.payload;
+    },
+    [retrieveFile.rejected]: (state, action) => {
+      state.retrieveFileStatus = "failed";
+      state.retrieveFileError = action.payload.errors;
+    },
+
+    [drawerRetrieveFile.pending]: (state) => {
+      state.drawerRetrieveFileStatus = "loading";
+    },
+    [drawerRetrieveFile.fulfilled]: (state, action) => {
+      state.drawerRetrieveFileStatus = "succeeded";
+      state.drawerRetrieveFileData = action.payload;
+    },
+    [drawerRetrieveFile.rejected]: (state, action) => {
+      state.drawerRetrieveFileStatus = "failed";
+      state.drawerRetrieveFileError = action.payload.errors;
+    },
   },
 });
 
@@ -135,6 +236,12 @@ export default fileSlice.reducer;
 export const listFileData = (state) => state.file.listFileData;
 export const listFileStatus = (state) => state.file.listFileStatus;
 export const listFileError = (state) => state.file.listFileError;
+
+export const listFileInFolderData = (state) => state.file.listFileInFolderData;
+export const listFileInFolderStatus = (state) =>
+  state.file.listFileInFolderStatus;
+export const listFileInFolderError = (state) =>
+  state.file.listFileInFolderError;
 
 export const { setUploadFileChanger } = fileSlice.actions;
 export const uploadFileChanger = (state) => state.file.uploadFileChanger;
@@ -149,3 +256,14 @@ export const deleteFileError = (state) => state.file.deleteFileError;
 export const listTrashFileData = (state) => state.file.listTrashFileData;
 export const listTrashFileStatus = (state) => state.file.listTrashFileStatus;
 export const listTrashFileError = (state) => state.file.listTrashFileError;
+
+export const retrieveFileData = (state) => state.file.retrieveFileData;
+export const retrieveFileStatus = (state) => state.file.retrieveFileStatus;
+export const retrieveFileError = (state) => state.file.retrieveFileError;
+
+export const drawerRetrieveFileData = (state) =>
+  state.file.drawerRetrieveFileData;
+export const drawerRetrieveFileStatus = (state) =>
+  state.file.drawerRetrieveFileStatus;
+export const drawerRetrieveFileError = (state) =>
+  state.file.drawerRetrieveFileError;

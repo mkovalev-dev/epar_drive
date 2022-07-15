@@ -1,6 +1,8 @@
 import folder from "../resources/img/folder.png";
 import excel from "../resources/img/excel.png";
 import docx from "../resources/img/doc.png";
+import png from "../resources/img/png.png";
+import jpg from "../resources/img/jpg.png";
 import undefined_file from "../resources/img/undefined_file.png";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,20 +12,29 @@ import {
   setActiveDrawerItem,
 } from "../pages/slice/sliceBase";
 import { Tooltip } from "antd";
+import { useNavigate } from "react-router-dom";
+import PhotoViewer from "./FolderComponents/PhotoViewer";
 
-export default function FolderElement({ title, type, id, isTrash }) {
+export default function FolderElement({ title, type, id, isTrash, src }) {
   const stateActiveFolderItem = useSelector(activeFolderItem);
   const dispatch = useDispatch();
   const [icon, setIcon] = useState();
+  const navigate = useNavigate();
+  const [visibleImgViewer, setVisibleImgViewer] = useState(false);
   useEffect(() => {
-    if (type === "folder") {
-      setIcon(folder);
-    } else if (type === ".xlsx") {
-      setIcon(excel);
-    } else if (type === ".docx") {
-      setIcon(docx);
-    } else {
-      setIcon(undefined_file);
+    switch (type) {
+      case "folder":
+        return setIcon(folder);
+      case ".xlsx":
+        return setIcon(excel);
+      case ".docx":
+        return setIcon(docx);
+      case ".png":
+        return setIcon(png);
+      case ".jpeg":
+        return setIcon(jpg);
+      default:
+        return setIcon(undefined_file);
     }
   }, []);
   return (
@@ -34,7 +45,7 @@ export default function FolderElement({ title, type, id, isTrash }) {
             ? "block-item-files-active"
             : "block-item-files"
         }
-        onClick={() => {
+        onContextMenu={() => {
           if (stateActiveFolderItem?.id === `${type}-${id}`) {
             dispatch(setActiveFolderItem({}));
             dispatch(setActiveDrawerItem({ visible: false }));
@@ -49,6 +60,15 @@ export default function FolderElement({ title, type, id, isTrash }) {
                 trash: isTrash,
               })
             );
+          }
+        }}
+        onClick={() => {
+          if (type === "folder") {
+            navigate(`/folder/${id}`);
+          } else if (type === ".png" || type === ".jpeg") {
+            setVisibleImgViewer(true);
+          } else if (type === ".xlsx") {
+            navigate(`/xlsx/viewer/${id}`);
           }
         }}
       >
@@ -66,6 +86,13 @@ export default function FolderElement({ title, type, id, isTrash }) {
             : title}
         </p>
       </div>
+      {visibleImgViewer && (
+        <PhotoViewer
+          src={src}
+          visible={visibleImgViewer}
+          setVisible={setVisibleImgViewer}
+        />
+      )}
     </Tooltip>
   );
 }

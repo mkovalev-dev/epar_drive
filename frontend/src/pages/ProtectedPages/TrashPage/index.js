@@ -23,7 +23,7 @@ export default function TrashPage() {
 
   return (
     <StateComponents>
-      <PageHeaderCustom title="Корзина" backIcon={false} />
+      <PageHeaderCustom title="Корзина" back={false} />
       <ListItems
         listData={[...stateTrashFolderListData, ...stateTrashFileListData]}
         status={stateTrashFolderListStatus}

@@ -25,10 +25,12 @@ import {
   trashFolderList,
 } from "../../pages/slice/sliceFolder";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModalRenameItem from "./ModalRenameItem";
 import { unwrapResult } from "@reduxjs/toolkit";
 import {
+  drawerRetrieveFile,
+  drawerRetrieveFileData,
   fileDelete,
   fileHardDelete,
   trashFileList,
@@ -37,8 +39,16 @@ import {
 export default function DrawerFolder() {
   const dispatch = useDispatch();
   const stateActiveDrawerItem = useSelector(activeDrawerItem);
+  const stateDrawerFileData = useSelector(drawerRetrieveFileData);
   // const stateFolderDeleteStatus = useSelector(deleteFolderStatus);
   const [visibleModalRename, setVisibleModalRename] = useState(false);
+  useEffect(() => {
+    if (stateActiveDrawerItem.type === "folder") {
+    } else {
+      dispatch(drawerRetrieveFile(stateActiveDrawerItem.id));
+    }
+  }, [stateActiveDrawerItem]);
+
   return (
     <Drawer
       bodyStyle={{
@@ -124,13 +134,24 @@ export default function DrawerFolder() {
                   >
                     Поделиться
                   </Button>
-                  <Button
-                    className="btn-default-custom"
-                    icon={<UploadOutlined />}
-                    disabled
-                  >
-                    Скачать
-                  </Button>
+                  {stateActiveDrawerItem.type === "folder" ? (
+                    <Button
+                      className="btn-default-custom"
+                      icon={<UploadOutlined />}
+                      disabled
+                    >
+                      Скачать
+                    </Button>
+                  ) : (
+                    <Button
+                      className="btn-default-custom"
+                      icon={<UploadOutlined />}
+                      href={stateDrawerFileData?.url}
+                      target="_blank"
+                    >
+                      Скачать
+                    </Button>
+                  )}
                   <Button
                     type="text"
                     icon={<EditOutlined />}
@@ -174,6 +195,7 @@ export default function DrawerFolder() {
                                             width: 325,
                                             borderRadius: "25px 25px 0 0",
                                             marginBottom: "7px",
+                                            bottom: -24,
                                           },
                                           placement: "bottomLeft",
                                         });
@@ -188,6 +210,7 @@ export default function DrawerFolder() {
                                 width: 325,
                                 borderRadius: "25px 25px 0 0",
                                 marginBottom: "7px",
+                                bottom: -24,
                               },
                               placement: "bottomLeft",
                             });
@@ -213,6 +236,7 @@ export default function DrawerFolder() {
                                             width: 325,
                                             borderRadius: "25px 25px 0 0",
                                             marginBottom: "7px",
+                                            bottom: -24,
                                           },
                                           placement: "bottomLeft",
                                         });
@@ -227,6 +251,7 @@ export default function DrawerFolder() {
                                 width: 325,
                                 borderRadius: "25px 25px 0 0",
                                 marginBottom: "7px",
+                                bottom: -24,
                               },
                               placement: "bottomLeft",
                             });
