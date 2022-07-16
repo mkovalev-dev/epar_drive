@@ -12,6 +12,12 @@ class User(AbstractUser):
     patronymic = models.CharField("Отчество", max_length=255, blank=True, null=True)
     email = models.EmailField("E-Mail", unique=True)
 
+    @property
+    def get_all_shared_permissions(self):
+        from apps.base.models import UserSharedPermission
+
+        return UserSharedPermission.objects.filter(user=self)
+
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"

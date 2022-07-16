@@ -45,6 +45,20 @@ class UserShareSerializer(serializers.ModelSerializer):
     """Сериализатор для списка пользователей в модуле поделиться"""
 
     groups = UserGroupSerializer(many=True)
+    shared = serializers.SerializerMethodField()
+
+    def get_shared(self, obj):
+        if self.context.get("type") == "folder":
+            instance = obj.get_all_shared_permissions.filter(
+                folder_to_id=self.context.get("id")
+            ).first()
+        else:
+            instance = obj.get_all_shared_permissions.filter(
+                file_to_id=self.context.get("id")
+            ).first()
+        if instance:
+            return {"read_only": instance.read_only, "id": instance.id}
+        return None
 
     class Meta:
         model = User
@@ -54,4 +68,5 @@ class UserShareSerializer(serializers.ModelSerializer):
             "last_name",
             "patronymic",
             "groups",
+            "shared",
         )

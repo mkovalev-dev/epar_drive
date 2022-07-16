@@ -26,6 +26,19 @@ class Folder(models.Model):
     head_folder = models.BooleanField("Главная папка с файлами", default=False)
     files = models.ManyToManyField(File, verbose_name="Файлы папки", blank=True)
     updated_date = models.DateTimeField("Дата обновления папки", auto_now=True)
+    allow_users = models.ManyToManyField(
+        User,
+        through="base.UserSharedPermission",
+        symmetrical=False,
+        related_name="folder_to",
+    )
+
+    @property
+    def shared(self):
+        """Имеется ли общий доступ"""
+        if self.allow_users.all().exists():
+            return True
+        return False
 
     @property
     def size_folder(self):
@@ -39,6 +52,10 @@ class Folder(models.Model):
                 size += file.size
 
         return size
+
+    @property
+    def get_all_children_folders(self):
+        return Folder.objects.filter(parent_folder=self)
 
     class Meta:
         verbose_name = "Папка"

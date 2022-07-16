@@ -54,6 +54,16 @@ class File(models.Model):
     in_basket = models.BooleanField("В корзине", default=False)
     file_version = models.ManyToManyField("self", verbose_name="Версии файлов")
     updated_date = models.DateTimeField("Дата обновления файла", auto_now=True)
+    allow_users = models.ManyToManyField(
+        User, through="UserSharedPermission", symmetrical=False, related_name="file_to"
+    )
+
+    @property
+    def shared(self):
+        """Имеется ли общий доступ"""
+        if self.allow_users.all().exists():
+            return True
+        return False
 
     @property
     def last_version(self):
@@ -76,3 +86,34 @@ def auto_delete_file(sender, instance, **kwargs):
     if instance.path:
         if os.path.isfile(instance.path.path):
             os.remove(instance.path.path)
+
+
+class UserSharedPermission(models.Model):
+    """Модель с правами пользователя в папках и файлах"""
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+    read_only = models.BooleanField("Только чтение", default=True)
+    folder_to = models.ForeignKey(
+        "folder.Folder",
+        on_delete=models.CASCADE,
+        verbose_name="Папка",
+        blank=True,
+        null=True,
+    )
+    file_to = models.ForeignKey(
+        "File", on_delete=models.CASCADE, verbose_name="Файл", blank=True, null=True
+    )
+    parent_permission = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        verbose_name="Родительские права",
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = "Права пользователя в папках и файлах"
+        verbose_name_plural = "Права пользователя в папках и файлах"
+        unique_together = ("user", "folder_to", "file_to")

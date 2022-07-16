@@ -52,7 +52,23 @@ class FileInFolderSerializer(serializers.ModelSerializer):
     """Сериализатор списка файлов"""
 
     type = serializers.CharField(source="prefix")
-    src = serializers.CharField(source="path.url")
+    src = serializers.SerializerMethodField()
+    read_only = serializers.SerializerMethodField()
+
+    def get_src(self, obj):
+        instance = obj.file_version.all().order_by("-created_date").first()
+        if instance:
+            return instance.path.url
+        return obj.path.url
+
+    def get_read_only(self, obj):
+        if (
+            user_permission := self.context.get("user")
+            .get_all_shared_permissions.filter(file_to=obj)
+            .first()
+        ):
+            return user_permission.read_only
+        return False
 
     class Meta:
         model = File
@@ -61,6 +77,8 @@ class FileInFolderSerializer(serializers.ModelSerializer):
             "id",
             "type",
             "src",
+            "shared",
+            "read_only",
         )
 
 
@@ -112,4 +130,5 @@ class DrawerInfoFileSerializer(serializers.ModelSerializer):
             "updated_date",
             "url",
             "creator",
+            "shared",
         )

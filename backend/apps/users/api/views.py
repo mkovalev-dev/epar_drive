@@ -4,7 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework import response, status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -59,5 +59,12 @@ class UserShareListAPIView(ListAPIView):
 
     permission_classes = (IsAuthenticated,)
     serializer_class = UserShareSerializer
-    queryset = User.objects.all()
+    queryset = None
     pagination_class = None
+
+    def get_queryset(self):
+        return User.objects.all().exclude(username=self.request.user.username)
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора id папки/файла и тип"""
+        return self.kwargs

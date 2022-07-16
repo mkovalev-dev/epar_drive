@@ -1,7 +1,10 @@
 from rest_framework import status
-from rest_framework.generics import DestroyAPIView
+from rest_framework.generics import DestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from apps.base.api.serializers import UserSharedPermissionSerializer
+from apps.base.models import UserSharedPermission
 
 
 class MoveItemInBasketMixin(DestroyAPIView):
@@ -19,3 +22,11 @@ class MoveItemInBasketMixin(DestroyAPIView):
         return Response(
             {"id": instance.id, "name": instance.name}, status=status.HTTP_200_OK
         )
+
+
+class UserSharePermissionCreateAPIView(CreateAPIView, DestroyAPIView):
+    """Создает и удаляет запись о правах в папке или файле"""
+
+    permission_classes = (IsAuthenticated,)
+    queryset = UserSharedPermission.objects.all()
+    serializer_class = UserSharedPermissionSerializer

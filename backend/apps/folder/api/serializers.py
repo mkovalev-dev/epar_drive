@@ -49,6 +49,7 @@ class FolderListSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "type",
+            "shared",
         )
 
 
@@ -57,6 +58,16 @@ class FolderInfoPageHeaderSerializer(serializers.ModelSerializer):
 
     size = serializers.FloatField(source="size_folder")
     breadcrump = serializers.SerializerMethodField(read_only=True)
+    read_only = serializers.SerializerMethodField()
+
+    def get_read_only(self, obj):
+        if (
+            user_permission := self.context.get("user")
+            .get_all_shared_permissions.filter(folder_to=obj)
+            .first()
+        ):
+            return user_permission.read_only
+        return False
 
     def get_breadcrump(self, obj):
         data = []
@@ -85,4 +96,5 @@ class FolderInfoPageHeaderSerializer(serializers.ModelSerializer):
             "name",
             "size",
             "breadcrump",
+            "read_only",
         )

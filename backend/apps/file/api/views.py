@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -40,12 +41,30 @@ class FileInHeadFolderListAPIView(ListAPIView):
     queryset = None
 
     def get_queryset(self):
-        return Folder.objects.get_or_create(
-            name="Техническая папка",
-            creator=self.request.user,
-            in_basket=False,
-            defaults={"head_folder": True},
-        )[0].files.filter(creator=self.request.user, in_basket=False)
+        return (
+            Folder.objects.get_or_create(
+                name="Техническая папка",
+                creator=self.request.user,
+                in_basket=False,
+                defaults={"head_folder": True},
+            )[0]
+            .files.filter(in_basket=False)
+            .filter(
+                Q(creator=self.request.user)
+                | Q(
+                    allow_users__in=[
+                        self.request.user,
+                    ]
+                )
+            )
+            .distinct()
+        )
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class FileDestroyAPIView(MoveItemInBasketMixin):
@@ -68,7 +87,24 @@ class TrashFileListAPIView(ListAPIView):
     queryset = None
 
     def get_queryset(self):
-        return File.objects.filter(creator=self.request.user, in_basket=True)
+        return (
+            File.objects.filter(in_basket=True)
+            .filter(
+                Q(creator=self.request.user)
+                | Q(
+                    allow_users__in=[
+                        self.request.user,
+                    ]
+                )
+            )
+            .distinct()
+        )
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class FileInFolderListAPIView(ListAPIView):
@@ -80,9 +116,25 @@ class FileInFolderListAPIView(ListAPIView):
     queryset = None
 
     def get_queryset(self):
-        return Folder.objects.get(id=self.kwargs.get("pk")).files.filter(
-            creator=self.request.user, in_basket=False
+        return (
+            Folder.objects.get(id=self.kwargs.get("pk"))
+            .files.filter(in_basket=False)
+            .filter(
+                Q(creator=self.request.user)
+                | Q(
+                    allow_users__in=[
+                        self.request.user,
+                    ]
+                )
+            )
+            .distinct()
         )
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class RetrieveFileSrcAPIView(RetrieveAPIView):
@@ -93,15 +145,13 @@ class RetrieveFileSrcAPIView(RetrieveAPIView):
     queryset = File.objects.all()
 
     def get_object(self):
-        if File.objects.get(id=self.kwargs.get("pk")).file_version.all().exists():
-            return (
-                File.objects.get(id=self.kwargs.get("pk"))
-                .file_version.all()
-                .order_by("-created_date")
-                .first()
-            )
-        else:
-            return File.objects.get(id=self.kwargs.get("pk"))
+        return File.objects.get(id=self.kwargs.get("pk"))
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class FileSaveAPIVIEW(UpdateAPIView):

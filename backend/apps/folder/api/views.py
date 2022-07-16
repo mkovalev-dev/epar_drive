@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
@@ -42,12 +43,29 @@ class FolderListAPIView(ListAPIView):
     queryset = None
 
     def get_queryset(self):
-        return Folder.objects.all().filter(
-            in_basket=False,
-            creator=self.request.user,
-            head_folder=False,
-            parent_folder_id__isnull=True,
+        return (
+            Folder.objects.all()
+            .filter(
+                in_basket=False,
+                head_folder=False,
+                parent_folder_id__isnull=True,
+            )
+            .filter(
+                Q(creator=self.request.user)
+                | Q(
+                    allow_users__in=[
+                        self.request.user,
+                    ]
+                )
+            )
+            .distinct()
         )
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class FolderDestroyAPIView(MoveItemInBasketMixin):
@@ -65,9 +83,25 @@ class TrashFolderListAPIView(ListAPIView):
     queryset = None
 
     def get_queryset(self):
-        return Folder.objects.all().filter(
-            in_basket=True, creator=self.request.user, head_folder=False
+        return (
+            Folder.objects.all()
+            .filter(in_basket=True, head_folder=False)
+            .filter(
+                Q(creator=self.request.user)
+                | Q(
+                    allow_users__in=[
+                        self.request.user,
+                    ]
+                )
+            )
+            .distinct()
         )
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class HardDeleteFolderDestroyAPIView(DestroyAPIView):
@@ -86,12 +120,28 @@ class FolderListRetrieveAPIView(ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        return Folder.objects.all().filter(
-            in_basket=False,
-            creator=self.request.user,
-            head_folder=False,
-            parent_folder_id=self.kwargs.get("pk"),
+        return (
+            Folder.objects.filter(
+                in_basket=False,
+                head_folder=False,
+                parent_folder_id=self.kwargs.get("pk"),
+            )
+            .filter(
+                Q(creator=self.request.user)
+                | Q(
+                    allow_users__in=[
+                        self.request.user,
+                    ]
+                )
+            )
+            .distinct()
         )
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
 
 
 class FolderInfoPageHeaderRetrieveAPIVIew(RetrieveAPIView):
@@ -100,3 +150,9 @@ class FolderInfoPageHeaderRetrieveAPIVIew(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Folder.objects.all()
     serializer_class = FolderInfoPageHeaderSerializer
+
+    def get_serializer_context(self):
+        """Проставляем в контекст сериализатора пользователя и родительскую папку"""
+        return {
+            "user": self.request.user,
+        }
