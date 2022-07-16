@@ -197,6 +197,7 @@ const folderSlice = createSlice({
     },
     [folderHeaderInfo.rejected]: (state, action) => {
       state.headerFolderStatus = "failed";
+      state.headerFolderData = {};
       state.headerFolderError = action.payload.errors;
     },
   },

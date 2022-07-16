@@ -7,6 +7,8 @@ const initialState = {
   userLoginError: null,
 
   checkLoginParams: false,
+
+  userSharedData: [],
 };
 
 export const userLogin = createAsyncThunk(
@@ -45,6 +47,17 @@ export const userLogout = createAsyncThunk(
   }
 );
 
+export const userShared = createAsyncThunk(
+  "users/userShared",
+  async ({ type, id }, { rejectWithValue }) => {
+    const response = await api.get(`users/share/${type.toString()}/${id}/`);
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
 const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -77,6 +90,10 @@ const usersSlice = createSlice({
       state.userLoginStatus = "failed";
       state.userLoginError = action.payload.errors;
     },
+
+    [userShared.fulfilled]: (state, action) => {
+      state.userSharedData = action.payload;
+    },
   },
 });
 
@@ -88,3 +105,5 @@ export const userLoginError = (state) => state.users.userLoginError;
 
 export const { setCheckLoginParams } = usersSlice.actions;
 export const checkLoginParams = (state) => state.users.checkLoginParams;
+
+export const userSharedData = (state) => state.users.userSharedData;

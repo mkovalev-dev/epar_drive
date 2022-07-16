@@ -4,8 +4,11 @@ import { Content, Footer, Header } from "antd/es/layout/layout";
 import logo from "../../resources/img/logo.png";
 import SiderMenu from "../../components/SiderMenu";
 import DrawerFolder from "../../components/FolderComponents/DrawerFolder";
+import { useSelector } from "react-redux";
+import { activeDrawerItem } from "../slice/sliceBase";
 
 export default function StateComponents({ children }) {
+  const stateActiveDrawerItem = useSelector(activeDrawerItem);
   return (
     <Layout className="font-custom-block">
       <Header className="header-private-home">
@@ -30,7 +33,7 @@ export default function StateComponents({ children }) {
         </Content>
       </Layout>
       <Footer className="footer">2022 © ООО ЭК ЭПАР</Footer>
-      <DrawerFolder />
+      {stateActiveDrawerItem?.visible && <DrawerFolder />}
     </Layout>
   );
 }

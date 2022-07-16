@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteFolderData,
+  folderHeaderInfo,
   folderList,
   listFolderData,
   listFolderStatus,
@@ -31,6 +32,7 @@ export default function ProtectedHomePage() {
   useEffect(() => {
     dispatch(folderList());
     dispatch(fileList());
+    dispatch(folderHeaderInfo(0));
   }, [
     stateNewFolder,
     stateFolderDelete,

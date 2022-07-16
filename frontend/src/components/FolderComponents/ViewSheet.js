@@ -85,34 +85,55 @@ export default function ViewSheet({ src }) {
       ) : (
         <>
           <PageHeader
-            title={stateFileData.name}
+            title={
+              <>
+                {stateFileData.name}
+                {stateFileData?.read_only && (
+                  <small style={{ color: "rgb(187,187,187)" }}>
+                    (Режим чтения)
+                  </small>
+                )}
+              </>
+            }
             onBack={() => navigate(-1)}
             extra={[
-              <Button
-                loading={saveLoading || loading}
-                className="btn-warning-custom"
-                disabled={!allowSave}
-                onClick={() => {
-                  ssObj.save({
-                    url: "https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save",
-                    fileName: "Worksheet",
-                    saveType: "Xlsx",
-                  });
-                }}
-              >
-                Сохранить
-              </Button>,
+              !stateFileData?.read_only && (
+                <Button
+                  loading={saveLoading || loading}
+                  className="btn-warning-custom"
+                  disabled={!allowSave}
+                  onClick={() => {
+                    ssObj.save({
+                      url: "https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save",
+                      fileName: "Worksheet",
+                      saveType: "Xlsx",
+                    });
+                  }}
+                >
+                  Сохранить
+                </Button>
+              ),
             ]}
           />
           <SpreadsheetComponent
             ref={(ssObj) => {
               setSsObj(ssObj);
             }}
-            cellEdit={(arg) => {
+            actionBegin={(arg) => {
               setAllowSave(true);
             }}
+            // cellEdit={(arg) => {
+            //   setAllowSave(true);
+            // }}
+            // cellEditing={(arg) => {
+            //   setAllowSave(true);
+            // }}
+            // cellSave={(arg) => {
+            //   setAllowSave(true);
+            // }}
             height="100vh"
             width="100%"
+            allowEditing={!stateFileData.read_only}
             locale="ru-RU"
             allowOpen={true}
             beforeSave={(arg) => {

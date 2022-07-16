@@ -35,6 +35,7 @@ import {
   fileHardDelete,
   trashFileList,
 } from "../../pages/slice/sliceFile";
+import ModalShareForUsers from "./ModalShareForUsers";
 
 export default function DrawerFolder() {
   const dispatch = useDispatch();
@@ -42,6 +43,8 @@ export default function DrawerFolder() {
   const stateDrawerFileData = useSelector(drawerRetrieveFileData);
   // const stateFolderDeleteStatus = useSelector(deleteFolderStatus);
   const [visibleModalRename, setVisibleModalRename] = useState(false);
+  const [visibleModalShareForUsers, setVisibleModalShareForUsers] =
+    useState(false);
   useEffect(() => {
     if (stateActiveDrawerItem.type === "folder") {
     } else {
@@ -84,7 +87,7 @@ export default function DrawerFolder() {
         <Col span={5}>
           <div style={{ marginTop: "4px", width: "100%" }}>
             <span style={{ color: "white", margin: 0, fontSize: "18px" }}>
-              {stateActiveDrawerItem?.name?.slice(0, 15) + "..."}
+              {stateActiveDrawerItem?.name?.slice(0, 25) + "..."}
             </span>
           </div>
         </Col>
@@ -127,12 +130,21 @@ export default function DrawerFolder() {
                 </>
               ) : (
                 <>
+                  {/*<Button*/}
+                  {/*  className="btn-default-custom"*/}
+                  {/*  icon={<ShareAltOutlined />}*/}
+                  {/*  disabled*/}
+                  {/*>*/}
+                  {/*  Поделиться*/}
+                  {/*</Button>*/}
                   <Button
                     className="btn-default-custom"
                     icon={<ShareAltOutlined />}
-                    disabled
+                    onClick={() => {
+                      setVisibleModalShareForUsers(true);
+                    }}
                   >
-                    Поделиться
+                    Настроить доступ
                   </Button>
                   {stateActiveDrawerItem.type === "folder" ? (
                     <Button
@@ -160,14 +172,14 @@ export default function DrawerFolder() {
                   >
                     Переименовать
                   </Button>
-                  <Button
-                    type="text"
-                    icon={<RetweetOutlined />}
-                    className="btn-text-custom"
-                    disabled
-                  >
-                    Переместить
-                  </Button>
+                  {/*<Button*/}
+                  {/*  type="text"*/}
+                  {/*  icon={<RetweetOutlined />}*/}
+                  {/*  className="btn-text-custom"*/}
+                  {/*  disabled*/}
+                  {/*>*/}
+                  {/*  Переместить*/}
+                  {/*</Button>*/}
                   <Button
                     type="text"
                     icon={<DeleteOutlined />}
@@ -263,20 +275,20 @@ export default function DrawerFolder() {
                   >
                     Удалить
                   </Button>
-                  <Button
-                    type="text"
-                    icon={<CopyOutlined />}
-                    className="btn-text-custom"
-                    disabled
-                  >
-                    Копировать
-                  </Button>
-                  <Button
-                    type="text"
-                    icon={<EllipsisOutlined rotate={90} />}
-                    className="btn-text-custom"
-                    disabled
-                  ></Button>
+                  {/*<Button*/}
+                  {/*  type="text"*/}
+                  {/*  icon={<CopyOutlined />}*/}
+                  {/*  className="btn-text-custom"*/}
+                  {/*  disabled*/}
+                  {/*>*/}
+                  {/*  Копировать*/}
+                  {/*</Button>*/}
+                  {/*<Button*/}
+                  {/*  type="text"*/}
+                  {/*  icon={<EllipsisOutlined rotate={90} />}*/}
+                  {/*  className="btn-text-custom"*/}
+                  {/*  disabled*/}
+                  {/*></Button>*/}
                   <Button
                     onClick={() => {
                       dispatch(setActiveFolderItem({}));
@@ -299,6 +311,19 @@ export default function DrawerFolder() {
           name={stateActiveDrawerItem.name}
           visible={visibleModalRename}
           setVisible={setVisibleModalRename}
+        />
+      )}
+      {visibleModalShareForUsers && (
+        <ModalShareForUsers
+          visible={visibleModalShareForUsers}
+          setVisible={setVisibleModalShareForUsers}
+          type={stateActiveDrawerItem.type}
+          id={stateActiveDrawerItem.id}
+          title={
+            stateActiveDrawerItem.type === "folder"
+              ? `Общий доступ к папке «${stateActiveDrawerItem.name}»`
+              : `Общий доступ к файлу «${stateActiveDrawerItem.name}»`
+          }
         />
       )}
     </Drawer>

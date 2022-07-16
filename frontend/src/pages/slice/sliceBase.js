@@ -7,6 +7,35 @@ const initialState = {
   activeDrawerItem: { visible: false },
 };
 
+export const userSharedPermission = createAsyncThunk(
+  "base/userSharedPermission",
+  async (data, { rejectWithValue }) => {
+    const response = await api.post("base/create/user/share/permission/", {
+      json: data,
+    });
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
+export const userSharedPermissionDestroy = createAsyncThunk(
+  "base/userSharedPermissionDestroy",
+  async (id, { rejectWithValue }) => {
+    const response = await api.delete(
+      `base/create/user/share/permission/${id}`,
+      {}
+    );
+    const dataResponse = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(dataResponse);
+    }
+    return dataResponse;
+  }
+);
+
 const baseSlice = createSlice({
   name: "base",
   initialState,
