@@ -2,6 +2,7 @@ from django.utils import timezone
 from rest_framework import serializers, status
 from rest_framework.response import Response
 
+from apps.base.models import UserSharedPermission
 from apps.base.utils import json_error_template
 from apps.folder.models import Folder
 
@@ -31,6 +32,24 @@ class CreateFolderSerializer(serializers.ModelSerializer):
         )
         if parent := instance.parent_folder:
             parent.updated_date = timezone.now()
+            for permission_user in parent.usersharedpermission_set.all():
+                if permission_user.parent_permission:
+                    parent_permission = permission_user.parent_permission
+                else:
+                    parent_permission = permission_user
+                UserSharedPermission.objects.create(
+                    folder_to=instance,
+                    user=permission_user.user,
+                    read_only=permission_user.read_only,
+                    parent_permission=parent_permission,
+                )
+            if parent.creator not in parent.allow_users.all():
+                UserSharedPermission.objects.create(
+                    folder_to=instance,
+                    user=parent.creator,
+                    read_only=False,
+                )
+
         return instance
 
     class Meta:

@@ -2,7 +2,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from apps.base.constants import FileTypeConst
-from apps.base.models import File, FileType
+from apps.base.models import File, FileType, UserSharedPermission
 from apps.file.utils import get_prefix_file
 from apps.folder.models import Folder
 from apps.users.api.serializers import UserSerializer
@@ -30,6 +30,24 @@ class UploadHeadFileInFolderSerializer(serializers.ModelSerializer):
         )
         if parent_id := self.context.get("parent_folder"):
             folder = Folder.objects.get(id=parent_id)
+
+            for permission_user in folder.usersharedpermission_set.all():
+                if permission_user.parent_permission:
+                    parent_permission = permission_user.parent_permission
+                else:
+                    parent_permission = permission_user
+                UserSharedPermission.objects.create(
+                    file_to=instance,
+                    user=permission_user.user,
+                    read_only=permission_user.read_only,
+                    parent_permission=parent_permission,
+                )
+            if folder.creator not in instance.allow_users.all():
+                UserSharedPermission.objects.create(
+                    file_to=instance,
+                    user=folder.creator,
+                    read_only=False,
+                )
         else:
             folder = Folder.objects.get(head_folder=True)
         folder.files.add(instance)

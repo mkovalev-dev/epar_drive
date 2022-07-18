@@ -16,6 +16,13 @@ class UserGroupSerializer(serializers.ModelSerializer):
 def recursion_create_permissions(instance_permission, data):
     if data.exists():
         for i in data:
+            for file in i.files.all():
+                UserSharedPermission.objects.create(
+                    file_to=file,
+                    user=instance_permission.user,
+                    read_only=instance_permission.read_only,
+                    parent_permission=instance_permission,
+                )
             UserSharedPermission.objects.create(
                 folder_to=i,
                 user=instance_permission.user,
